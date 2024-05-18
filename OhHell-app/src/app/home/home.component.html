@@ -1,0 +1,10 @@
+<div class="home-container">
+  <h1>Welcome to Poker Room</h1>
+  <div>
+    <button (click)="createRoom()">Create Room</button>
+  </div>
+  <div>
+    <input [(ngModel)]="roomId" placeholder="Enter Room ID" />
+    <button (click)="joinRoom()">Join Room</button>
+  </div>
+</div>

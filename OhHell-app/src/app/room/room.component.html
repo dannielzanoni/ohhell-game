@@ -1,0 +1,32 @@
+<div class="container">
+  <div>
+    <div class="table-container">
+      <div class="table">
+        <div
+          *ngFor="let player of players | keyvalue; let i = index"
+          class="player-square player-{{ i }}"
+        >
+          {{ player.value }}
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div class="room-link">
+        <h2>Room: {{ roomId }}</h2>
+        <label for="room-link">Room Link:</label>
+        <input id="room-link" type="text" [value]="roomLink" readonly />
+        <button (click)="generateRoomLink()">Generate Link</button>
+      </div>
+      <ul id="messages">
+        <li *ngFor="let message of messages">
+          {{ message }}
+        </li>
+      </ul>
+      <form id="form" (submit)="sendMessage($event)">
+        <input id="input" type="text" autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
