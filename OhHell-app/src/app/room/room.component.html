@@ -2,11 +2,16 @@
   <div>
     <div class="table-container">
       <div class="table">
-        <div
-          *ngFor="let player of players | keyvalue; let i = index"
-          class="player-square player-{{ i }}"
-        >
-          {{ player.value }}
+        <div *ngFor="let player of players | keyvalue; let i = index" class="player-square player-{{ i }}">
+          <div class="profile-pic" [ngStyle]="{
+              'background-image': 'url(' + player.value.profilePicture + ')'
+            }"></div>
+
+          <div class="prediction-circle">3</div>
+          {{ player.value.userName }}
+          <div class="hearts">
+            <img class="heart" src="../../assets/heart3.png" alt="" *ngFor="let heart of getHearts(player.key)" />
+          </div>
         </div>
       </div>
     </div>
@@ -16,7 +21,9 @@
         <h2>Room: {{ roomId }}</h2>
         <label for="room-link">Room Link:</label>
         <input id="room-link" type="text" [value]="roomLink" readonly />
-        <button (click)="generateRoomLink()">Generate Link</button>
+        <button class="btn-generate-room-link" (click)="generateRoomLink()">
+          <img src="../../assets/copy_black_ico.png" alt="" />
+        </button>
       </div>
       <ul id="messages">
         <li *ngFor="let message of messages">
@@ -28,5 +35,18 @@
         <button type="submit">Send</button>
       </form>
     </div>
+  </div>
+
+  <div *ngIf="!allPlayersReady" class="ready-container">
+    <div class="ready-count">
+      Players ready: {{ readyPlayersCount }}/{{ totalPlayersCount }}
+    </div>
+    <button class="btn-ready" (click)="markAsReady()">Ready</button>
+  </div>
+
+  <div *ngIf="allPlayersReady" class="cards-container">
+    <div class="card"><img src="../../assets/cards/1ouro.jpg" alt="" /></div>
+    <div class="card"><img src="../../assets/cards/2ouro.jpg" alt="" /></div>
+    <div class="card"><img src="../../assets/cards/3ouro.jpg" alt="" /></div>
   </div>
 </div>

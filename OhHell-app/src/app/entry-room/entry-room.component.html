@@ -1,5 +1,16 @@
 <div class="user-name-entry-container">
-  <h2>Enter Your Username</h2>
-  <input [(ngModel)]="userName" placeholder="Username" />
-  <button (click)="enterRoom()">Enter Room</button>
+  <div class="profile-pictures">
+    <img
+      *ngFor="let picture of profilePictures"
+      [src]="picture"
+      [class.selected]="picture === selectedPicture"
+      (click)="selectPicture(picture)"
+      alt="Profile Picture"
+    />
+  </div>
+  <div class="input-container">
+    <h2>Enter Your Username</h2>
+    <input [(ngModel)]="userName" placeholder="Username" />
+    <button (click)="enterRoom()">Enter Room</button>
+  </div>
 </div>

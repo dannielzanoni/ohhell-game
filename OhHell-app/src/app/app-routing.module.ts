@@ -7,7 +7,7 @@ import { EntryRoomComponent } from './entry-room/entry-room.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'entry-room/:roomId', component: EntryRoomComponent },
-  { path: 'room/:roomId/:userName', component: RoomComponent }
+  { path: 'room/:roomId/:userName/:profilePicture', component: RoomComponent }
 ];
 
 

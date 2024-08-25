@@ -8,13 +8,25 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class EntryRoomComponent {
   userName = '';
+  selectedPicture: string = '';
+  profilePictures: string[] = [];
 
   constructor(private router: Router, private route: ActivatedRoute) { }
 
+  ngOnInit() {
+    for (let i = 1; i <= 30; i++) {
+      this.profilePictures.push(`../../assets/profile_pictures/${i}.png`);
+    }
+  }
+
+  selectPicture(picture: string) {
+    this.selectedPicture = picture;
+  }
+
   enterRoom() {
     const roomId = this.route.snapshot.paramMap.get('roomId');
-    if (this.userName && roomId) {
-      this.router.navigate([`/room`, roomId, this.userName]);
+    if (this.userName && roomId && this.selectedPicture) {
+      this.router.navigate([`/room`, roomId, this.userName, this.selectedPicture]);
     }
   }
 }
