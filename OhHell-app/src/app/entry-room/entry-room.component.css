@@ -32,9 +32,9 @@ body {
 }
 
 .profile-pictures img {
-  width: 80px; /* Reduzido de 100px para 80px */
-  height: 80px; /* Reduzido de 100px para 80px */
-  margin: 10px; /* Aumentado de 5px para 10px */
+  width: 80px;
+  height: 80px;
+  margin: 10px;
   cursor: pointer;
   border: 2px solid transparent;
   border-radius: 50%;
@@ -52,7 +52,7 @@ body {
 .input-container {
   margin-top: 1rem;
   width: 100%;
-  max-width: 300px; /* Define a largura máxima */
+  max-width: 300px;
 }
 
 .input-container h2 {
