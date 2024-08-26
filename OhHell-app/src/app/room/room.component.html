@@ -6,11 +6,17 @@
           <div class="profile-pic" [ngStyle]="{
               'background-image': 'url(' + player.value.profilePicture + ')'
             }"></div>
-
-          <div class="prediction-circle">3</div>
-          {{ player.value.userName }}
-          <div class="hearts">
-            <img class="heart" src="../../assets/heart3.png" alt="" *ngFor="let heart of getHearts(player.key)" />
+          <div class="data-player">
+            <div class="prediction-circle">3</div>
+            {{ player.value.userName }}
+            <div class="hearts">
+              <img class="heart" src="../../assets/heart3.png" alt="" *ngFor="let heart of getHearts(player.key)" />
+            </div>
+            <div class="cards-back-player">
+              <img class="heart" src="../assets/cards/back_card.jpg">
+              <img class="heart" src="../assets/cards/back_card.jpg">
+              <img class="heart" src="../assets/cards/back_card.jpg">
+            </div>
           </div>
         </div>
       </div>

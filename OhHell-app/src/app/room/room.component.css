@@ -337,3 +337,7 @@ body {
   z-index: 3;
   transform: translateX(-1rem);
 }
+
+.data-player {
+  margin-top: 1.5rem;
+}
