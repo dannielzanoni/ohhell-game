@@ -1,12 +1,8 @@
 <div class="home-container">
-  <h1>Oh-Hell Game</h1>
-  <div>
-    <button (click)="createRoom()">Create Room</button>
-    <button>Rooms</button>
-  </div>
-  <div>
-    <input [(ngModel)]="roomId" placeholder="Enter Room ID" />
-    <button (click)="joinRoom()">Join Room</button>
-  </div>
-  <button>How to Play</button>
+  <h1 class="title">Oh-Hell Game</h1>
+  <button class="button btn--room" (click)="createRoom()">Create Room</button>
+  <button class="button btn--room">Rooms</button>
+  <button class="button btn--room" (click)="joinRoom()">Join Room</button>
+  <input *ngIf="joinInput" class="input-room" [(ngModel)]="roomId" placeholder="Enter Room ID" />
+  <button class="button btn--room">How to Play</button>
 </div>

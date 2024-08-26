@@ -9,10 +9,12 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class HomeComponent {
   roomId = '';
+  joinInput: boolean = false;
 
   constructor(private router: Router) { }
 
   joinRoom() {
+    this.joinInput = true;
     console.log(this.roomId);
     if (this.roomId) {
       this.router.navigate(['/entry-room', this.roomId]);
