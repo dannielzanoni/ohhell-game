@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { io, Socket } from 'socket.io-client';
 
@@ -18,6 +18,13 @@ export class RoomComponent implements OnInit, OnDestroy {
   readyPlayersCount: number = 0;
   totalPlayersCount: number = 0;
   allPlayersReady: boolean = false;
+  cards = [
+    '../assets/cards/1ouro.jpg',
+    '../assets/cards/2ouro.jpg',
+    '../assets/cards/3ouro.jpg'
+  ];
+
+  @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
   constructor(private route: ActivatedRoute) { }
 
@@ -131,5 +138,36 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   private checkAllPlayersReady() {
     this.allPlayersReady = this.readyPlayersCount === this.totalPlayersCount && this.totalPlayersCount > 0;
+  }
+
+  ngAfterViewInit() {
+    this.adjustCardSize();
+  }
+
+  adjustCardSize() {
+    const cards = this.cardsContainer.nativeElement.querySelectorAll('.card img');
+    const numberOfCards = cards.length;
+    console.log(numberOfCards);
+
+    let newSize = '7.7rem';
+
+    if (numberOfCards >= 19) {
+      newSize = '5.5rem';
+    } else if (numberOfCards >= 16) {
+      newSize = '6rem';
+    }
+
+    cards.forEach((card: HTMLImageElement) => {
+      card.style.width = newSize;
+    });
+  }
+
+  moveToCenter(event: Event) {
+    const cardElement = event.target as HTMLElement;
+    const currentCenterCard = this.cardsContainer.nativeElement.querySelector('.move-to-center');
+    if (currentCenterCard) {
+      currentCenterCard.classList.remove('move-to-center');
+    }
+    cardElement.classList.add('move-to-center');
   }
 }

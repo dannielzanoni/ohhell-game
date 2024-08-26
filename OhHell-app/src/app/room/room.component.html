@@ -44,9 +44,22 @@
     <button class="btn-ready" (click)="markAsReady()">Ready</button>
   </div>
 
-  <div *ngIf="allPlayersReady" class="cards-container">
-    <div class="card"><img src="../../assets/cards/1ouro.jpg" alt="" /></div>
-    <div class="card"><img src="../../assets/cards/2ouro.jpg" alt="" /></div>
-    <div class="card"><img src="../../assets/cards/3ouro.jpg" alt="" /></div>
+  <div class="deck-container">
+    <div class="card-back">
+      <img src="../assets/cards/back_card.jpg">
+      <img src="../assets/cards/back_card.jpg">
+      <img src="../assets/cards/back_card.jpg">
+    </div>
+  </div>
+  <div class="joker-container">
+    <div class="card">
+      <img src="../assets/cards/3ouro.jpg">
+    </div>
+  </div>
+
+  <div *ngIf="allPlayersReady" class="cards-container" #cardsContainer>
+    <div class="card" *ngFor="let card of cards">
+      <img [src]="card" (click)="moveToCenter($event)" />
+    </div>
   </div>
 </div>
