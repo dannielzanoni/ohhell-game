@@ -38,7 +38,7 @@
       </ul>
       <form id="form" (submit)="sendMessage($event)">
         <input id="input" type="text" autocomplete="off" />
-        <button type="submit">Send</button>
+        <button style="cursor: pointer;" type="submit">Send</button>
       </form>
     </div>
   </div>
@@ -67,5 +67,18 @@
     <div class="card" *ngFor="let card of cards">
       <img [src]="card" (click)="moveToCenter($event)" />
     </div>
+  </div>
+
+  <div class="info">
+    <h3>Game Info</h3>
+    <img class="info-cards" src="../assets/cards/1ouro.jpg" alt="">
+    <img class="arrow" src="../assets/red_arrow.png" alt="">
+    <img class="info-cards" src="../assets/cards/1espada.jpg" alt="">
+    <img class="arrow" src="../assets/red_arrow.png" alt="">
+    <img class="info-cards" src="../assets/cards/1copas.jpg" alt="">
+    <img class="arrow" src="../assets/red_arrow.png" alt="">
+    <img class="info-cards" src="../assets/cards/1paus.jpg" alt="">
+    <h4>Joker: </h4>
+    <h4>Round Number: </h4>
   </div>
 </div>

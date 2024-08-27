@@ -341,3 +341,32 @@ body {
 .data-player {
   margin-top: 1.5rem;
 }
+
+.info {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 320px;
+  background-color: rgba(34, 31, 31, 0.8);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.info h3,
+.info h4 {
+  margin: 10px 0;
+}
+
+.info-cards {
+  width: 100%;
+  border-radius: 6px;
+  height: 5rem;
+  width: 3.5rem;
+}
+
+.arrow {
+  width: 2rem;
+  margin-bottom: 25px;
+}
