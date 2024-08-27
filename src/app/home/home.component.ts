@@ -29,8 +29,11 @@ export class HomeComponent implements OnInit {
   }
 
   createRoom() {
-    const newRoomId = uuidv4();
-    this.router.navigate(['/entry-room', newRoomId]);
+    this.router.navigate(['/entry-room']);
+  }
+
+  viewRooms() {
+    this.router.navigate(['/view-rooms']);
   }
 
 }

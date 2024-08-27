@@ -8,13 +8,15 @@ import { HomeComponent } from './home/home.component';
 import { RoomComponent } from './room/room.component';
 import { FormsModule } from '@angular/forms';
 import { EntryRoomComponent } from './entry-room/entry-room.component';
+import { ViewRoomsComponent } from './view-rooms/view-rooms.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     RoomComponent,
-    EntryRoomComponent
+    EntryRoomComponent,
+    ViewRoomsComponent
   ],
   imports: [
     BrowserModule,
