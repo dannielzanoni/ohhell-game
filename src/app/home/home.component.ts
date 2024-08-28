@@ -11,29 +11,34 @@ import { GameService } from '../services/game.service';
 export class HomeComponent implements OnInit {
   roomId = '';
   joinInput: boolean = false;
+  userName = '';
+  selectedPicture: string = '';
+  profilePictures: string[] = [];
 
   constructor(private router: Router, private gameService: GameService) {
-
   }
 
   ngOnInit(): void {
     this.gameService.sendAuth();
-  }
-
-  joinRoom() {
-    this.joinInput = true;
-    console.log(this.roomId);
-    if (this.roomId) {
-      this.router.navigate(['/entry-room', this.roomId]);
+    for (let i = 1; i <= 30; i++) {
+      this.profilePictures.push(`../../assets/profile_pictures/${i}.png`);
     }
   }
 
+  joinRoom() {
+    this.router.navigate(['/']);
+  }
+
   createRoom() {
-    this.router.navigate(['/entry-room']);
+    this.router.navigate(['/']);
   }
 
   viewRooms() {
     this.router.navigate(['/view-rooms']);
+  }
+
+  private selectPicture(picture: string) {
+    this.selectedPicture = picture;
   }
 
 }

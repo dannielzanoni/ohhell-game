@@ -7,7 +7,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { RoomComponent } from './room/room.component';
 import { FormsModule } from '@angular/forms';
-import { EntryRoomComponent } from './entry-room/entry-room.component';
 import { ViewRoomsComponent } from './view-rooms/view-rooms.component';
 
 @NgModule({
@@ -15,7 +14,6 @@ import { ViewRoomsComponent } from './view-rooms/view-rooms.component';
     AppComponent,
     HomeComponent,
     RoomComponent,
-    EntryRoomComponent,
     ViewRoomsComponent
   ],
   imports: [

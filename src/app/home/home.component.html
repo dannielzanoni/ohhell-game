@@ -1,8 +1,18 @@
 <div class="home-container">
   <h1 class="title">Oh-Hell Game</h1>
-  <button class="button btn--room" (click)="createRoom()">Create Room</button>
-  <button class="button btn--room" (click)="viewRooms()">Rooms</button>
-  <button class="button btn--room" (click)="joinRoom()">Join Room</button>
-  <input *ngIf="joinInput" class="input-room" [(ngModel)]="roomId" placeholder="Enter Room ID" />
-  <button class="button btn--room">How to Play</button>
+  <div class="options">
+    <button class="button btn--room" (click)="createRoom()">Create Room</button>
+    <button class="button btn--room" (click)="viewRooms()">Rooms</button>
+    <button class="button btn--room" (click)="joinRoom()">Join Room</button>
+    <input *ngIf="joinInput" class="input-room" [(ngModel)]="roomId" placeholder="Enter Room ID" />
+    <button class="button btn--room">How to Play</button>
+  </div>
+  <div class="player-preview">
+    <h3>Text your NickName</h3>
+    <input [(ngModel)]="userName" placeholder="Username" />
+    <div class="profile-pictures">
+      <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"
+        (click)="selectPicture(picture)" alt="Profile Picture" />
+    </div>
+  </div>
 </div>

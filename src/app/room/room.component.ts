@@ -37,7 +37,7 @@ export class RoomComponent {
   //   this.userName = this.route.snapshot.paramMap.get('userName')!;
   //   this.profilePicture = decodeURIComponent(this.route.snapshot.paramMap.get('profilePicture')!);
   //   this.socket = io();
-  //   this.roomLink = `${window.location.origin}/entry-room/${this.roomId}`;
+  //   this.roomLink = ``;
   //   this.socket.emit('playerJoin', { roomId: this.roomId, userName: this.userName, profilePicture: this.profilePicture });
 
   //   this.socket.on('message', (data: any) => {
@@ -96,7 +96,7 @@ export class RoomComponent {
   // }
 
   generateRoomLink() {
-    this.roomLink = `${window.location.origin}/entry-room/${this.roomId}`;
+    this.roomLink = ``;
     const content1 = document.createElement('textarea');
     content1.style.position = 'fixed';
     content1.style.left = '0';
