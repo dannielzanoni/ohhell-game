@@ -1,0 +1,20 @@
+# fly.toml app configuration file generated for ng-fodinha on 2024-08-28T19:49:14-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'ng-fodinha'
+primary_region = 'gru'
+
+[build]
+
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  size = 'shared-cpu-1x'
