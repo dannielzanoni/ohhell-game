@@ -1,0 +1,82 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-image: url("../../assets/back.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.view-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: url("../../assets/back.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.table-container {
+  background-color: rgba(7, 7, 7, 0.5);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  display: inline-block;
+  height: 25rem;
+  width: 40rem;
+  overflow: auto;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.styled-table thead tr {
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.styled-table tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #333;
+}
+
+.btn-join {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-join:hover {
+  background-color: #218838;
+}

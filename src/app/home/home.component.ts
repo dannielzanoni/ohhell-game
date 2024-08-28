@@ -30,14 +30,14 @@ export class HomeComponent implements OnInit {
   }
 
   createRoom() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/room']);
   }
 
   viewRooms() {
     this.router.navigate(['/view-rooms']);
   }
 
-  private selectPicture(picture: string) {
+  selectPicture(picture: string) {
     this.selectedPicture = picture;
   }
 

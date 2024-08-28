@@ -8,7 +8,7 @@
     <button class="button btn--room">How to Play</button>
   </div>
   <div class="player-preview">
-    <h3>Text your NickName</h3>
+    <h3>Text your UserName</h3>
     <input [(ngModel)]="userName" placeholder="Username" />
     <div class="profile-pictures">
       <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"
