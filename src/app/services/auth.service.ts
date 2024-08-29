@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { AnonymousPlayer } from './lobby.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +18,6 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.client.post<AnonymousPlayer>(url, payload, { headers })
+    return this.client.post<{ token: string }>(url, payload, { headers })
   }
 }
