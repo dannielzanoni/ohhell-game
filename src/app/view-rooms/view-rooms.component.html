@@ -1,26 +1,26 @@
 <div class="view-container">
-    <div class="table-container">
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Locale</th>
-                    <th>Name</th>
-                    <th>Players</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let lobby of lobbies$ | async">
-                    <td>{{ lobby.id }}</td>
-                    <td>BR</td>
-                    <td>Test room</td>
-                    <td>{{ lobby.playerCount }}/10</td>
-                    <td>Waiting</td>
-                    <td><button class="btn-join">Join</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="table-container">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Locale</th>
+          <th>Name</th>
+          <th>Players</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lobby of lobbies$ | async">
+          <td>{{ lobby.id }}</td>
+          <td>BR</td>
+          <td>Test room</td>
+          <td>{{ lobby.player_count }}/10</td>
+          <td>Waiting</td>
+          <td><button class="btn-join">Join</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
