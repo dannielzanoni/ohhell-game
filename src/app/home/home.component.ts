@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { v4 as uuidv4 } from 'uuid';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   selectedPicture: string = '';
   profilePictures: string[] = [];
 
-  constructor(private router: Router, private gameService: GameService, private lobbyService: LobbyService) {
+  constructor(private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -25,20 +25,21 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  createRoom() {
-    this.lobbyService.createLobby().subscribe(id => this.router.navigate(['/room', id]));
+  createLobby() {
+    const photoIndex = Math.floor(Math.random() * this.profilePictures.length)
+    this.authService.login(this.userName, photoIndex).subscribe(console.log)
+    this.lobbyService.createLobby().subscribe(this.joinRoom)
   }
 
-  joinRoom() {
-    this.router.navigate(['/']);
+  joinRoom(id: string) {
+    this.router.navigate(['/game', id]);
   }
 
   viewRooms() {
-    this.router.navigate(['/view-rooms']);
+    this.router.navigate(['/game']);
   }
 
   selectPicture(picture: string) {
     this.selectedPicture = picture;
   }
-
 }

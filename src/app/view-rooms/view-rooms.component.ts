@@ -8,13 +8,9 @@ import { Observable } from 'rxjs';
   styleUrl: './view-rooms.component.css'
 })
 export class ViewRoomsComponent {
-
   lobbies$: Observable<ViewLobbyDTO[]>;
 
   constructor(private lobbyService: LobbyService) {
-
     this.lobbies$ = this.lobbyService.getLobbies();
   }
-
-
 }

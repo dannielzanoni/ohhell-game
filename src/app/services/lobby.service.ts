@@ -1,61 +1,56 @@
 import { HttpClient } from "@angular/common/http";
-import { deserializeServerMessage } from "./server.service";
 import { environment } from '../../environments/environment';
-import { ClientGameMessage } from "./client.service";
 import { Injectable } from "@angular/core";
 
 export interface ViewLobbyDTO {
-    id: string;
-    playerCount: number;
+  id: string;
+  player_count: number;
 }
 
 export interface JoinLobbyDTO {
-    id: string;
-    players: Player[];
+  id: string;
+  players: Player[];
 }
 
 type Player = {
-    type: "AnonymousUserClaims",
-    data: AnonymousPlayer,
+  type: "AnonymousUserClaims",
+  data: AnonymousPlayer,
 } | {
-    type: "GoogleUserClaims",
-    data: GooglePlayer
+  type: "GoogleUserClaims",
+  data: GooglePlayer
 };
 
 type GooglePlayer = {
-    email: string;
-    picture: string;
-    name: string;
+  email: string;
+  picture: string;
+  name: string;
 }
 
-type AnonymousPlayer = {
-    pictureIndex: number;
-    name: string;
-    id: string;
+export type AnonymousPlayer = {
+  picture_index: number;
+  name: string;
+  id: string;
 }
 
 type CreateLobby = {
-    lobbyId: string;
+  lobby_id: string;
 }
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-
 export class LobbyService {
+  constructor(private client: HttpClient) { }
 
-    constructor(private client: HttpClient) {
-    }
+  getLobbies() {
+    return this.client.get<ViewLobbyDTO[]>(`${environment.api_url}/lobby`)
+  }
 
-    getLobbies() {
-        return this.client.get<ViewLobbyDTO[]>(`${environment.api_url}/lobby`)
-    }
+  joinLobby(id: string) {
+    return this.client.put<JoinLobbyDTO>(`${environment.api_url}/lobby/${id}`, '')
+  }
 
-    joinLobby(id: string) {
-        return this.client.put<JoinLobbyDTO>(`${environment.api_url}/lobby/${id}`, '')
-    }
-
-    createLobby() {
-        return this.client.post<CreateLobby>(`${environment.api_url}/lobby`, '')
-    }
+  createLobby() {
+    return this.client.post<CreateLobby>(`${environment.api_url}/lobby`, '')
+  }
 }
