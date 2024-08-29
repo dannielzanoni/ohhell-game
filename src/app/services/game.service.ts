@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { deserializeServerMessage } from './server.service';
 import { Router } from '@angular/router';
 import { ClientGameMessage } from './client.service';
-import { environment } from '../../environment/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
-  private socket = new WebSocket(`wss://${environment.api_url}/game`);
+  private socket = new WebSocket(environment.websocket_url);
 
   constructor(private router: Router) {
     this.socket.onmessage = (event: MessageEvent) => {

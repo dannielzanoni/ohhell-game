@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { deserializeServerMessage } from "./server.service";
-import { environment } from '../../environment/environment';
+import { environment } from '../../environments/environment';
 import { ClientGameMessage } from "./client.service";
 import { Injectable } from "@angular/core";
 
