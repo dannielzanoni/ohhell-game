@@ -27,8 +27,11 @@ export class HomeComponent implements OnInit {
 
   createLobby() {
     const photoIndex = Math.floor(Math.random() * this.profilePictures.length)
-    this.authService.login(this.userName, photoIndex).subscribe(console.log)
-    this.lobbyService.createLobby().subscribe(this.joinLobby)
+    this.authService.login(this.userName, photoIndex).subscribe(x => {
+      console.log("Login: ", x)
+      localStorage.setItem('JWT_TOKEN', x.token)
+      this.lobbyService.createLobby().subscribe(this.joinLobby)
+    })
   }
 
   joinLobby() {
