@@ -10,7 +10,7 @@ export class AuthService {
 
   login(name: string, photoIndex: number) {
     const url = `${environment.api_url}/auth/login`
-    const payload = { photo_index: photoIndex, nickname: name }
+    const payload = { picture_index: photoIndex, nickname: name }
 
     const token = localStorage.getItem('JWT_TOKEN');
 
