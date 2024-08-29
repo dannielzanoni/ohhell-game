@@ -14,7 +14,13 @@ export interface JoinLobbyDTO {
     players: Player[];
 }
 
-type Player = GooglePlayer | AnonymousPlayer;
+type Player = {
+    type: "AnonymousUserClaims",
+    data: AnonymousPlayer,
+} | {
+    type: "GoogleUserClaims",
+    data: GooglePlayer
+};
 
 type GooglePlayer = {
     email: string;

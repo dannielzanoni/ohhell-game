@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.gameService.sendAuth();
     for (let i = 1; i <= 30; i++) {
       this.profilePictures.push(`../../assets/profile_pictures/${i}.png`);
     }

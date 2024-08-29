@@ -28,14 +28,6 @@ export class GameService {
     };
   }
 
-  public sendAuth() {
-    this.socket.onopen = () => {
-      console.log('WebSocket is connected.');
-      // const obj: ClientMessage = { type: "Auth", data: "Joao" };
-      // this.sendMessage(obj);
-    };
-  }
-
   sendMessage(message: ClientGameMessage) {
     console.log('client: ', message);
     const json = JSON.stringify(message);
