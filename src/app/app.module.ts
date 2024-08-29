@@ -5,16 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
-import { RoomComponent } from './room/room.component';
+import { GameComponent } from './game/game.component';
 import { FormsModule } from '@angular/forms';
-import { ViewRoomsComponent } from './view-rooms/view-rooms.component';
+import { ViewGamesComponent } from './view-games/view-games.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    RoomComponent,
-    ViewRoomsComponent
+    GameComponent,
+    ViewGamesComponent
   ],
   imports: [
     BrowserModule,

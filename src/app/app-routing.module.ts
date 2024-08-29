@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { RoomComponent } from './room/room.component';
-import { ViewRoomsComponent } from './view-rooms/view-rooms.component';
+import { GameComponent } from './game/game.component';
+import { ViewGamesComponent } from './view-games/view-games.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'room/:id', component: RoomComponent },
-  { path: 'view-rooms', component: ViewRoomsComponent }
+  { path: 'game/:id', component: GameComponent },
+  { path: 'game', component: ViewGamesComponent }
 ];
 
 

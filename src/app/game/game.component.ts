@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-room',
-  templateUrl: './room.component.html',
-  styleUrls: ['./room.component.css']
+  templateUrl: './game.component.html',
+  styleUrls: ['./game.component.css']
 })
-export class RoomComponent {
+export class GameComponent {
   messages: string[] = [];
   players: { [key: number]: { userName: string, profilePicture: string, ready: boolean } } = {};
   userName!: string;

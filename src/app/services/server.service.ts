@@ -1,4 +1,4 @@
-import { Turn } from "./client.service";
+import { Turn } from "../models/turn";
 
 
 // Server Game Message

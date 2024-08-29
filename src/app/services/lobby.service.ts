@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 import { Injectable } from "@angular/core";
+import { Player } from '../models/player';
 
 export interface ViewLobbyDTO {
   id: string;
@@ -10,26 +11,6 @@ export interface ViewLobbyDTO {
 export interface JoinLobbyDTO {
   id: string;
   players: Player[];
-}
-
-type Player = {
-  type: "AnonymousUserClaims",
-  data: AnonymousPlayer,
-} | {
-  type: "GoogleUserClaims",
-  data: GooglePlayer
-};
-
-type GooglePlayer = {
-  email: string;
-  picture: string;
-  name: string;
-}
-
-export type AnonymousPlayer = {
-  picture_index: number;
-  name: string;
-  id: string;
 }
 
 type CreateLobby = {
