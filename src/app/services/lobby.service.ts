@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 import { Injectable } from "@angular/core";
 
@@ -51,6 +51,12 @@ export class LobbyService {
   }
 
   createLobby() {
-    return this.client.post<CreateLobby>(`${environment.api_url}/lobby`, '')
+    const token = localStorage.getItem('JWT_TOKEN');
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.client.post<CreateLobby>(`${environment.api_url}/lobby`, {}, { headers })
   }
 }
