@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
 import { GameService } from '../services/game.service';
+import { LobbyService } from '../services/lobby.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +16,7 @@ export class HomeComponent implements OnInit {
   selectedPicture: string = '';
   profilePictures: string[] = [];
 
-  constructor(private router: Router, private gameService: GameService) {
+  constructor(private router: Router, private gameService: GameService, private lobbyService: LobbyService) {
   }
 
   ngOnInit(): void {
@@ -25,12 +26,12 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  joinRoom() {
-    this.router.navigate(['/']);
+  createRoom() {
+    this.lobbyService.createLobby().subscribe(id => this.router.navigate(['/room', id]));
   }
 
-  createRoom() {
-    this.router.navigate(['/room']);
+  joinRoom() {
+    this.router.navigate(['/']);
   }
 
   viewRooms() {

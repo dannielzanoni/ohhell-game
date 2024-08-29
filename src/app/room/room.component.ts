@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-room',
@@ -9,7 +9,6 @@ import { ActivatedRoute } from '@angular/router';
 export class RoomComponent {
   messages: string[] = [];
   players: { [key: number]: { userName: string, profilePicture: string, ready: boolean } } = {};
-  roomId!: string;
   userName!: string;
   roomLink: string = '';
   profilePicture!: string;
@@ -21,11 +20,28 @@ export class RoomComponent {
     '../assets/cards/2ouro.jpg',
     '../assets/cards/3ouro.jpg'
   ];
+  roomId: string | null = null;
+  isValidGuid: boolean = false;
 
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private router: Router) { }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.roomId = params.get('id');
+      this.isValidGuid = this.validateGuid(this.roomId);
+
+      if (!this.isValidGuid) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
+  validateGuid(guid: string | null): boolean {
+    const guidRegex = /^[{(]?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}[)}]?$/
+    return guidRegex.test(guid || '');
+  }
 
 
   markAsReady() {

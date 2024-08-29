@@ -12,20 +12,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
+                <tr *ngFor="let lobby of lobbies$ | async">
+                    <td>{{ lobby.id }}</td>
                     <td>BR</td>
                     <td>Test room</td>
-                    <td>1/10</td>
+                    <td>{{ lobby.playerCount }}/10</td>
                     <td>Waiting</td>
-                    <td><button class="btn-join">Join</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>BR</td>
-                    <td>Test room</td>
-                    <td>2/10</td>
-                    <td>In Progress</td>
                     <td><button class="btn-join">Join</button></td>
                 </tr>
             </tbody>

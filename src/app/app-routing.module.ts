@@ -6,7 +6,7 @@ import { ViewRoomsComponent } from './view-rooms/view-rooms.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'room', component: RoomComponent },
+  { path: 'room/:id', component: RoomComponent },
   { path: 'view-rooms', component: ViewRoomsComponent }
 ];
 
