@@ -28,14 +28,14 @@ export class HomeComponent implements OnInit {
   createLobby() {
     const photoIndex = Math.floor(Math.random() * this.profilePictures.length)
     this.authService.login(this.userName, photoIndex).subscribe(console.log)
-    this.lobbyService.createLobby().subscribe(this.joinRoom)
+    this.lobbyService.createLobby().subscribe(this.joinLobby)
   }
 
-  joinRoom(id: string) {
-    this.router.navigate(['/game', id]);
+  joinLobby() {
+    this.router.navigate(['/game', this.roomId]);
   }
 
-  viewRooms() {
+  viewLobbies() {
     this.router.navigate(['/game']);
   }
 
