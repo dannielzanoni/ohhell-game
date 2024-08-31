@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
     this.authService.login(this.userName, photoIndex).subscribe(x => {
       console.log("Login: ", x)
       localStorage.setItem('JWT_TOKEN', x.token)
-      this.lobbyService.createLobby().subscribe(this.joinLobby)
+      this.lobbyService.createLobby().subscribe(this.joinLobby.bind(this))
     })
   }
 

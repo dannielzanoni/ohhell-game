@@ -1,15 +1,24 @@
 <div class="home-container">
   <div class="options">
     <h1 class="title">Oh-Hell Game</h1>
-    <button class="button btn--room" (click)="createLobby()">Create Room</button>
-    <button class="button btn--room" (click)="viewLobbies()">Rooms</button>
-    <button class="button btn--room" (click)="joinLobby()">Join Room</button>
+    <p-button label="Create Game" [raised]="true" severity="danger" (click)="createLobby()" />
+    <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewLobbies()" />
+    <p-button label="Join Room" [raised]="true" severity="danger" (click)="joinLobby()" />
+    <p-button label="How to Play" [raised]="true" severity="danger" />
     <input *ngIf="joinInput" class="input-room" [(ngModel)]="roomId" placeholder="Enter lobby ID" />
-    <button class="button btn--room">How to Play</button>
+    <p-button severity="contrast">
+      <ng-template pTemplate="content">
+        <img src="../../assets/github.png" alt="GitHub" style="width: 16px; height: 16px; margin-right: 8px;" />
+        GitHub
+      </ng-template>
+    </p-button>
+
   </div>
   <div class="player-preview">
-    <h3>Text your UserName</h3>
-    <input [(ngModel)]="userName" placeholder="Username" />
+    <p-floatLabel style="margin-bottom: 20px;">
+      <input id="username" type="text" pInputText [(ngModel)]="userName" />
+      <label for="username">Username</label>
+    </p-floatLabel>
     <div class="profile-pictures">
       <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"
         (click)="selectPicture(picture)" alt="Profile Picture" />

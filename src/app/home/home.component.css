@@ -113,18 +113,29 @@
   display: inline-block;
 }
 
+.player-preview {
+  color: white;
+  background-color: rgba(7, 7, 7, 0.5);
+  padding: 30px 20px;
+  border-radius: 8px;
+  text-align: center;
+  display: inline-block;
+}
+
 .profile-pictures {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 2rem;
-  width: 30rem;
+  width: 500px;
+  height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .profile-pictures img {
   width: 80px;
   height: 80px;
-  margin: 10px;
+  margin: 5px;
   cursor: pointer;
   border: 2px solid transparent;
   border-radius: 50%;
@@ -137,4 +148,9 @@
 
 .profile-pictures img.selected {
   border-color: #ffee00;
+}
+
+.options p-button {
+  width: 200px;
+  margin-top: 10px;
 }

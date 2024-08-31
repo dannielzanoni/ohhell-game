@@ -8,6 +8,10 @@ import { HomeComponent } from './home/home.component';
 import { GameComponent } from './game/game.component';
 import { FormsModule } from '@angular/forms';
 import { ViewGamesComponent } from './view-games/view-games.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @NgModule({
   declarations: [
@@ -20,7 +24,11 @@ import { ViewGamesComponent } from './view-games/view-games.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    InputTextModule,
+    BrowserAnimationsModule,
+    ButtonModule,
+    FloatLabelModule
   ],
   providers: [
 
