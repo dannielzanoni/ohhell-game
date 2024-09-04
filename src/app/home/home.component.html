@@ -1,12 +1,12 @@
 <div class="home-container">
   <div class="options">
     <h1 class="title">Oh-Hell Game</h1>
-    <p-button label="Create Game" [raised]="true" severity="danger" (click)="createLobby()" />
-    <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewLobbies()" />
+    <p-button label="Create Game" [raised]="true" severity="danger" (click)="crateGame()" />
+    <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewGames()" />
     <p-button label="Join Room" [raised]="true" severity="danger" (click)="joinLobby()" />
-    <p-button label="How to Play" [raised]="true" severity="danger" />
+    <p-button label="How to Play" [raised]="true" severity="danger" (click)="openHowToPlay()" />
     <input *ngIf="joinInput" class="input-room" [(ngModel)]="roomId" placeholder="Enter lobby ID" />
-    <p-button severity="contrast">
+    <p-button severity="contrast" (click)="openLink()">
       <ng-template pTemplate="content">
         <img src="../../assets/github.png" alt="GitHub" style="width: 16px; height: 16px; margin-right: 8px;" />
         GitHub

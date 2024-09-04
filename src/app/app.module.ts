@@ -12,13 +12,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { HowToPlayComponent } from './how-to-play/how-to-play.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     GameComponent,
-    ViewGamesComponent
+    ViewGamesComponent,
+    HowToPlayComponent
   ],
   imports: [
     BrowserModule,

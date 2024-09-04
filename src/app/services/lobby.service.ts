@@ -13,7 +13,7 @@ export interface JoinLobbyDTO {
   players: Player[];
 }
 
-type CreateLobby = {
+type CreateGame = {
   lobby_id: string;
 }
 
@@ -31,13 +31,13 @@ export class LobbyService {
     return this.client.put<JoinLobbyDTO>(`${environment.api_url}/lobby/${id}`, '')
   }
 
-  createLobby() {
+  createGame() {
     const token = localStorage.getItem('JWT_TOKEN');
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    return this.client.post<CreateLobby>(`${environment.api_url}/lobby`, {}, { headers })
+    return this.client.post<CreateGame>(`${environment.api_url}/lobby`, {}, { headers })
   }
 }
