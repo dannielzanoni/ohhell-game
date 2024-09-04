@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  crateGame() {
+  createGame() {
     const photoIndex = Math.floor(Math.random() * this.profilePictures.length)
     this.authService.login(this.userName, photoIndex).subscribe(x => {
       console.log("Login: ", x)
