@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService, PlayerReadyDTO } from '../services/lobby.service';
-import { ServerGameMessage, ServerMessage } from '../services/server.service';
+import { ServerGameMessage } from '../services/server.service';
 import { Card, Turn } from '../models/turn';
 import { PlayerPoints } from '../models/player';
 
@@ -27,7 +27,7 @@ export class GameComponent {
   ];
   roomId: string | null = null;
   isValidGuid: boolean = false;
-
+  ready = false;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -136,13 +136,18 @@ export class GameComponent {
   }
 
   markAsReady() {
-    this.players.forEach(player => {
-      if (player.player.data.name === this.userName) {
-        player.ready = true;
-      }
-    });
-    this.readyPlayersCount = this.getReadyPlayers().length;
-    this.checkAllPlayersReady();
+    // TODO this should be handled in handlePlayerStatusChange
+    //
+    // this.players.forEach(player => {
+    //   if (player.player.data.name === this.userName) {
+    //     player.ready = true;
+    //   }
+    // });
+    // this.readyPlayersCount = this.getReadyPlayers().length;
+    // this.checkAllPlayersReady();
+
+    this.ready = !this.ready;
+    this.gameService.sendGameMessage({ type: "PlayerStatusChange", data: { ready: this.ready } })
   }
 
   getReadyPlayers() {
