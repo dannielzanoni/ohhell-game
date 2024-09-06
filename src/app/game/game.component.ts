@@ -68,8 +68,8 @@ export class GameComponent {
         return this.handlePlayerBidded(message.data);
       case 'PlayerBiddingTurn':
         return this.handlePlayerBiddingTurn(message.data);
-      case 'PlayerReady':
-        return this.handlePlayerReady(message.data);
+      case 'PlayerStatusChange':
+        return this.handlePlayerStatusChange(message.data);
       case 'RoundEnded':
         return this.handleRoundEnded(message.data);
       case 'PlayerDeck':
@@ -113,7 +113,7 @@ export class GameComponent {
     //mostrar valor na tela para os outros tchos
   }
 
-  handlePlayerReady(data: { player_id: string; }) {
+  handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
     //player deu ready
   }
 
