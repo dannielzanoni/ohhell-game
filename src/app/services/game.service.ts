@@ -54,14 +54,14 @@ export class GameService {
       };
 
       this.socket.onclose = (event: CloseEvent) => {
-        console.log('WebSocket closed: ', event);
+        console.warn('WebSocket closed: ', event);
       };
     } else {
       console.error('WebSocket is not initialized');
     }
   }
 
-  sendClientMessage(message: ClientMessage) {
+  private sendClientMessage(message: ClientMessage) {
     if (this.socket) {
       console.log('Client Message: ', message);
       const json = JSON.stringify(message);
@@ -72,12 +72,6 @@ export class GameService {
   }
 
   sendGameMessage(message: ClientGameMessage) {
-    if (this.socket) {
-      console.log('Game Message: ', message);
-      const json = JSON.stringify(message);
-      this.socket.send(json);
-    } else {
-      console.error('WebSocket is not initialized');
-    }
+    this.sendClientMessage({ type: "Game", data: message })
   }
 }
