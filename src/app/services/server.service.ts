@@ -1,14 +1,24 @@
-import { Turn } from "../models/turn";
+import { Player, PlayerPoints } from "../models/player";
+import { Card, Turn } from "../models/turn";
 
 
 // Server Game Message
 export type ServerGameMessage =
-    | { type: "PlayerBidded"; data: { player_id: string; bid: number } };
+    | { type: 'PlayerTurn'; data: { player_id: string } }
+    | { type: 'TurnPlayed'; data: { turn: Turn } }
+    | { type: 'PlayerBidded'; data: { player_id: string, bid: number } }
+    | { type: 'PlayerBiddingTurn'; data: { player_id: string } }
+    | { type: 'PlayerReady'; data: { player_id: string } }
+    | { type: 'RoundEnded'; data: PlayerPoints }
+    | { type: 'PlayerDeck'; data: Card[] }
+    | { type: 'SetStart'; data: Card }
+    | { type: 'SetEnded'; data: PlayerPoints }
+    | { type: 'GameEnded'; data: null };
 
 // Server Message
 export type ServerMessage =
     | { type: "Game"; data: ServerGameMessage }
-    | { type: "Error"; data: string };
+    | { type: "Authorized"; data: Player };
 
 
 export function deserializeServerMessage(json: string): ServerMessage {
@@ -19,8 +29,9 @@ export function deserializeServerMessage(json: string): ServerMessage {
         case "Game":
             return { type: "Game", data: parsed.data as ServerGameMessage };
         case "Error":
-            return { type: "Error", data: parsed.data as string };
+            return { type: "Authorized", data: parsed.data as Player };
         default:
-            throw new Error("Unknown message type");
+            console.error("Unknown message type ", parsed);
+            throw new Error("Unknown message type",);
     }
 }

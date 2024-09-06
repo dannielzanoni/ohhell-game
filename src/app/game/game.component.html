@@ -2,15 +2,15 @@
   <div>
     <div class="table-container">
       <div class="table">
-        <div *ngFor="let player of players | keyvalue; let i = index" class="player-square player-{{ i }}">
+        <div *ngFor="let playerInfo of players; let i = index" class="player-square player-{{ i }}">
           <div class="profile-pic" [ngStyle]="{
-              'background-image': 'url(' + player.value.profilePicture + ')'
+              'background-image': 'url(' + player + ')'
             }"></div>
-          <div class="data-player">
+          <div class="data-player" [class.ready]="player.ready">
             <div class="prediction-circle">3</div>
-            {{ player.value.userName }}
+            {{ playerInfo.player.data.name }}
             <div class="hearts">
-              <img class="heart" src="../../assets/heart3.png" alt="" *ngFor="let heart of getHearts(player.key)" />
+              <img class="heart" src="../../assets/heart3.png" alt="" />
             </div>
             <div class="cards-back-player">
               <img class="heart" src="../assets/cards/back_card.jpg">
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="chat-container">
+    <!-- <div class="chat-container">
       <div class="room-link">
         <h2>Room: {{ roomId }}</h2>
         <label for="room-link">Room Link:</label>
@@ -36,18 +36,14 @@
           {{ message }}
         </li>
       </ul>
-      <!-- <form id="form" (submit)="sendMessage($event)">
-        <input id="input" type="text" autocomplete="off" />
-        <button style="cursor: pointer;" type="submit">Send</button>
-      </form> -->
-    </div>
+    </div> -->
   </div>
 
   <div *ngIf="!allPlayersReady" class="ready-container">
     <div class="ready-count">
       Players ready: {{ readyPlayersCount }}/{{ totalPlayersCount }}
     </div>
-    <button class="btn-ready" (click)="markAsReady()">Ready</button>
+    <p-button label="Ready" [raised]="true" severity="secondary" (click)="markAsReady()" />
   </div>
 
   <div class="deck-container">

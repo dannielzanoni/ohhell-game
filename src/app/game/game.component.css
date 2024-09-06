@@ -172,11 +172,6 @@ body {
   color: #fff;
 }
 
-.btn-ready {
-  margin-top: 45rem;
-  height: 2rem;
-}
-
 .hearts {
   display: flex;
   margin-top: 5px;
@@ -222,21 +217,16 @@ body {
 }
 
 .ready-container {
-  display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-bottom: -50rem;
+  text-align: center;
 }
 
 .ready-count {
   margin-bottom: 10px;
   font-size: 1.2rem;
   color: white;
-}
-
-.btn-ready {
-  height: 2rem;
-  cursor: pointer;
 }
 
 .btn-generate-room-link {
@@ -250,6 +240,7 @@ body {
 .btn-generate-room-link:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
 .btn-generate-room-link img {
   width: 20px;
   height: 20px;
@@ -346,7 +337,7 @@ body {
   position: fixed;
   top: 10px;
   left: 10px;
-  width: 320px;
+  width: 340px;
   background-color: rgba(34, 31, 31, 0.8);
   padding: 10px;
   border-radius: 8px;

@@ -1,37 +1,83 @@
-import { Injectable } from '@angular/core';
-import { deserializeServerMessage } from './server.service';
+import { EventEmitter, Injectable } from '@angular/core';
+import { deserializeServerMessage, ServerGameMessage, ServerMessage } from './server.service';
 import { Router } from '@angular/router';
-import { ClientGameMessage } from './client.service';
+import { ClientGameMessage, ClientMessage } from './client.service';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
+import { Turn } from '../models/turn';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
-  private socket = new WebSocket(environment.websocket_url);
+  private socket: WebSocket | undefined;
+  emitter = new EventEmitter<ServerGameMessage>();
 
   constructor(private router: Router) {
-    this.socket.onmessage = (event: MessageEvent) => {
 
-      const message = deserializeServerMessage(event.data);
-      console.log('server: ', message);
-
-      switch (message.type) {
-        case "Game":
-          return { type: "Game", };
-        case "Error":
-          return { type: "Error", };
-        default:
-          throw new Error("Unknown message type");
-      }
-
-    };
   }
 
-  sendMessage(message: ClientGameMessage) {
-    console.log('client: ', message);
-    const json = JSON.stringify(message);
-    this.socket.send(json);
+  auth() {
+    const token = localStorage.getItem('JWT_TOKEN') ?? '';
 
+    if (!token) {
+      this.router.navigate(['/']);
+      return;
+    }
+    this.socket = new WebSocket(environment.websocket_url);
+
+    this.socket.onopen = () => {
+      this.sendClientMessage({ type: 'Auth', data: token });
+    };
+
+    this.handleSocket();
+  }
+
+  private handleSocket() {
+    if (this.socket) {
+      this.socket.onmessage = (event: MessageEvent) => {
+        const message = deserializeServerMessage(event.data);
+        console.log('server: ', message);
+
+        switch (message.type) {
+          case 'Game':
+            return this.emitter.emit(message.data);
+          case 'Authorized':
+            return console.log('Authorized', message.data);
+          default:
+            throw new Error('Unknown message type');
+        }
+      };
+
+      this.socket.onerror = (error: Event) => {
+        console.error('WebSocket error: ', error);
+      };
+
+      this.socket.onclose = (event: CloseEvent) => {
+        console.log('WebSocket closed: ', event);
+      };
+    } else {
+      console.error('WebSocket is not initialized');
+    }
+  }
+
+  sendClientMessage(message: ClientMessage) {
+    if (this.socket) {
+      console.log('Client Message: ', message);
+      const json = JSON.stringify(message);
+      this.socket.send(json);
+    } else {
+      console.error('WebSocket is not initialized');
+    }
+  }
+
+  sendGameMessage(message: ClientGameMessage) {
+    if (this.socket) {
+      console.log('Game Message: ', message);
+      const json = JSON.stringify(message);
+      this.socket.send(json);
+    } else {
+      console.error('WebSocket is not initialized');
+    }
   }
 }

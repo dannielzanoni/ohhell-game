@@ -1,5 +1,10 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GameService } from '../services/game.service';
+import { LobbyService, PlayerReadyDTO } from '../services/lobby.service';
+import { ServerGameMessage, ServerMessage } from '../services/server.service';
+import { Card, Turn } from '../models/turn';
+import { PlayerPoints } from '../models/player';
 
 @Component({
   selector: 'app-room',
@@ -8,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class GameComponent {
   messages: string[] = [];
-  players: { [key: number]: { userName: string, profilePicture: string, ready: boolean } } = {};
+  players: PlayerReadyDTO[] = [];
   userName!: string;
   roomLink: string = '';
   profilePicture!: string;
@@ -26,90 +31,129 @@ export class GameComponent {
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      this.roomId = params.get('id');
-      this.isValidGuid = this.validateGuid(this.roomId);
 
-      if (!this.isValidGuid) {
-        this.router.navigate(['/']);
+      this.roomId = params.get('id');
+      if (this.roomId == null) {
+        this.router.navigate(['viewgames']);
+        return
       }
+
+      this.lobbyService.joinLobby(this.roomId).subscribe(x => {
+        this.players = x!.players;
+        this.totalPlayersCount = this.players.length;
+
+        this.gameService.auth();
+        this.gameService.emitter.subscribe(x => {
+          this.handleServerGameMessage(x);
+        });
+      });
+
     });
   }
-  validateGuid(guid: string | null): boolean {
-    const guidRegex = /^[{(]?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}[)}]?$/
-    return guidRegex.test(guid || '');
+
+  //todo999 form pra inputar name foto quando entrar por link
+  //todo dar pull no back para playerInfo.player.data.name
+
+  handleServerGameMessage(message: ServerGameMessage) {
+    switch (message.type) {
+      case 'PlayerTurn':
+        return this.handlePlayerTurn(message.data);
+      case 'TurnPlayed':
+        return this.handleTurnPlayed(message.data);
+      case 'PlayerBidded':
+        return this.handlePlayerBidded(message.data);
+      case 'PlayerBiddingTurn':
+        return this.handlePlayerBiddingTurn(message.data);
+      case 'PlayerReady':
+        return this.handlePlayerReady(message.data);
+      case 'RoundEnded':
+        return this.handleRoundEnded(message.data);
+      case 'PlayerDeck':
+        return this.handlePlayerDeck(message.data);
+      case 'SetStart':
+        return this.handleSetStart(message.data);
+      case 'SetEnded':
+        return this.handleSetEnded(message.data);
+      case 'GameEnded':
+        return this.handleGameEnded(message.data);
+    }
   }
 
+
+  //fazer handles
+
+  handleGameEnded(data: null) {
+    //game terminou
+  }
+
+  handleSetEnded(data: PlayerPoints) {
+    //fim do set, retorna um dicionario com id do player e o numero de pontos
+  }
+
+  handleSetStart(data: Card) {
+    //coringa
+  }
+
+  handlePlayerDeck(data: Card[]) {
+    //cartas do jogador
+    //mostar as cartas na tela do jogador
+
+  }
+
+  handleRoundEnded(data: PlayerPoints) {
+    //round terminou, retorna um dicionario com id do player e o numero de vidas atualizada
+  }
+
+  handlePlayerBidded(data: { player_id: string; bid: number; }) {
+    //player apostou o valor
+    //mostrar valor na tela para os outros tchos
+  }
+
+  handlePlayerReady(data: { player_id: string; }) {
+    //player deu ready
+  }
+
+  handleTurnPlayed(data: { turn: Turn; }) {
+    //fazer animacao da carta
+    //player jogou alguma carta
+  }
+
+  handlePlayerTurn(data: { player_id: string; }) {
+    //pintar o player da vez
+  }
+
+  handlePlayerBiddingTurn(data: { player_id: string; }) {
+    //mostrar qual tcho deve apostar suas bids
+  }
+
+
+  checkAllPlayersReady() {
+    this.allPlayersReady = this.readyPlayersCount === this.totalPlayersCount && this.readyPlayersCount >= 2;
+  }
 
   markAsReady() {
-    // this.socket.emit('playerReady');
+    this.players.forEach(player => {
+      if (player.player.data.name === this.userName) {
+        player.ready = true;
+      }
+    });
+    this.readyPlayersCount = this.getReadyPlayers().length;
+    this.checkAllPlayersReady();
   }
 
-  // ngOnInit() {
-  //   this.roomId = this.route.snapshot.paramMap.get('roomId')!;
-  //   this.userName = this.route.snapshot.paramMap.get('userName')!;
-  //   this.profilePicture = decodeURIComponent(this.route.snapshot.paramMap.get('profilePicture')!);
-  //   this.socket = io();
-  //   this.roomLink = ``;
-  //   this.socket.emit('playerJoin', { roomId: this.roomId, userName: this.userName, profilePicture: this.profilePicture });
+  getReadyPlayers() {
+    return this.players.filter(playerReadyDTO => playerReadyDTO.ready);
+  }
 
-  //   this.socket.on('message', (data: any) => {
-  //     const { id, message, special } = data;
-  //     if (message.includes("leave the lobby") || message.includes("joined the lobby")) {
-  //       this.messages.push(`${message}`);
-  //     } else {
-  //       this.messages.push(`${id}: ${message}`);
-  //     }
-  //   });
-
-  //   this.socket.on('allPlayers', (players: any[]) => {
-  //     this.players = {};  // Clear current players list
-  //     let readyCount = 0;
-  //     players.sort((a, b) => a.position - b.position).forEach(player => {
-  //       this.players[player.position] = {
-  //         userName: player.userName,
-  //         profilePicture: player.profilePicture,
-  //         ready: player.ready
-  //       };
-  //       if (player.ready) {
-  //         readyCount++;
-  //       }
-  //     });
-  //     this.readyPlayersCount = readyCount;
-  //     this.checkAllPlayersReady();
-  //   });
-
-  //   this.socket.on('playerJoined', (data: any) => {
-  //     const { position, userName, profilePicture, ready } = data;
-  //     this.players[position] = { userName, profilePicture, ready };
-  //     this.checkAllPlayersReady();
-  //   });
-
-  //   this.socket.on('playerLeft', (data: any) => {
-  //     const { position } = data;
-  //     delete this.players[position];
-  //     this.checkAllPlayersReady();
-  //   });
-
-  //   this.socket.on('totalPlayersCount', (count: number) => {
-  //     this.totalPlayersCount = count;
-  //     this.checkAllPlayersReady();
-  //   });
-
-  //   this.socket.on('readyPlayersCount', (count: number) => {
-  //     this.readyPlayersCount = count;
-  //     this.checkAllPlayersReady();
-  //   });
-
-  //   this.socket.on('playerReady', (data: any) => {
-  //     this.readyPlayersCount = data.readyPlayersCount;
-  //     this.messages.push(`${data.userName} is ready!`);
-  //     this.checkAllPlayersReady();
-  //   });
-  // }
+  displayPlayers() {
+    this.players.forEach(playerReadyDTO => {
+      console.log(`Player: ${playerReadyDTO.player.data.name}, Ready: ${playerReadyDTO.ready}`);
+    })
+  }
 
   generateRoomLink() {
     this.roomLink = ``;
@@ -137,15 +181,15 @@ export class GameComponent {
     return hearts;
   }
 
-  private checkAllPlayersReady() {
-    this.allPlayersReady = this.readyPlayersCount === this.totalPlayersCount && this.totalPlayersCount > 0;
-  }
-
   ngAfterViewInit() {
     this.adjustCardSize();
   }
 
   adjustCardSize() {
+    if (!this.allPlayersReady) {
+      return
+    }
+
     const cards = this.cardsContainer.nativeElement.querySelectorAll('.card img');
     const numberOfCards = cards.length;
     console.log(numberOfCards);

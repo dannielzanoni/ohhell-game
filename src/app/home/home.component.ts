@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
 import { AuthService } from '../services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -10,13 +11,15 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  roomId = '';
-  joinInput: boolean = false;
-  userName = '';
+  userName: string | null = null;
   selectedPicture: string = '';
   profilePictures: string[] = [];
 
-  constructor(private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
+  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
+    const claims = authService.getClaims();
+
+    //todo mover username para authservice, nao fazer validacao aqui!!!!!!!!!!!!
+    this.userName = claims?.name || null;
   }
 
   ngOnInit(): void {
@@ -25,17 +28,14 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  createGame() {
+  async createGame() {
+    //todo validar se o cara selecionou foto
     const photoIndex = Math.floor(Math.random() * this.profilePictures.length)
-    this.authService.login(this.userName, photoIndex).subscribe(x => {
-      console.log("Login: ", x)
-      localStorage.setItem('JWT_TOKEN', x.token)
-      this.lobbyService.createGame().subscribe(this.joinLobby.bind(this))
-    })
-  }
 
-  joinLobby() {
-    this.router.navigate(['/game', this.roomId]);
+    await this.authService.login(this.userName!, photoIndex);
+
+    const lobby = await firstValueFrom(this.lobbyService.createGame());
+    this.router.navigate(['/game', lobby.lobby_id.$oid]);
   }
 
   openHowToPlay() {
