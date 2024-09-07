@@ -1,8 +1,10 @@
+import { PlayerReadyDTO } from "../services/lobby.service";
+
 export type Player = {
-    type: "AnonymousUserClaims",
+    type: "Anonymous",
     data: AnonymousPlayer,
 } | {
-    type: "GoogleUserClaims",
+    type: "Google",
     data: GooglePlayer
 };
 
@@ -13,9 +15,36 @@ export type GooglePlayer = {
 }
 
 export type AnonymousPlayer = {
-    picture_index: number;
+    picture: string;
     name: string;
     id: string;
+}
+
+export type PlayerInfo = {
+    lifes: number;
+    data: Player;
+    ready: boolean;
+    setInfo: SetInfo | null;
+}
+
+export type SetInfo = {
+    bid: number;
+    points: number;
+}
+
+export function getPlayerId(player: Player) {
+    switch (player.type) {
+        case "Anonymous":
+            return player.data.id
+        case "Google":
+            return player.data.email
+        default:
+            throw new Error('Unknown player type');
+    }
+}
+
+export function getPlayerInfo(player: Player) {
+    return { lifes: 5, data: player, ready: false, setInfo: null }
 }
 
 //id e pontos do jogador
