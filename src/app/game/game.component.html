@@ -1,49 +1,33 @@
-<div class="container">
+<div class="container" *ngIf="isAuthenticated">
   <div>
     <div class="table-container">
       <div class="table">
-        <div *ngFor="let playerInfo of players; let i = index" class="player-square player-{{ i }}">
+        <div *ngFor="let playerInfo of getMapEntries(); let i = index" class="player-square player-{{ i }}">
           <div class="profile-pic" [ngStyle]="{
-              'background-image': 'url(' + playerInfo + ')'
+              'background-image': 'url(' + playerInfo.data.data.picture + ')'
             }"></div>
           <div class="data-player" [class.ready]="playerInfo.ready">
-            <div class="prediction-circle">3</div>
-            {{ playerInfo.player.data.name }}
+            <div class="prediction-circle">{{ playerInfo.setInfo?.bid}}</div>
+            {{ playerInfo.data.data.name }}
             <div class="hearts">
-              <img class="heart" src="../../assets/heart3.png" alt="" />
+              <img *ngFor="let heart of getHearts(playerInfo.lifes)" class="heart" src="../../assets/heart3.png"
+                alt="Heart" />
             </div>
             <div class="cards-back-player">
-              <img class="heart" src="../assets/cards/back_card.jpg">
-              <img class="heart" src="../assets/cards/back_card.jpg">
-              <img class="heart" src="../assets/cards/back_card.jpg">
+              <img *ngFor="let card of getPoints(playerInfo)" class="heart" src="../assets/cards/back_card.jpg">
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- <div class="chat-container">
-      <div class="room-link">
-        <h2>Room: {{ roomId }}</h2>
-        <label for="room-link">Room Link:</label>
-        <input id="room-link" type="text" [value]="roomLink" readonly />
-        <button class="btn-generate-room-link" (click)="generateRoomLink()">
-          <img src="../../assets/copy_black_ico.png" alt="" />
-        </button>
-      </div>
-      <ul id="messages">
-        <li *ngFor="let message of messages">
-          {{ message }}
-        </li>
-      </ul>
-    </div> -->
   </div>
 
   <div *ngIf="!allPlayersReady" class="ready-container">
     <div class="ready-count">
       Players ready: {{ readyPlayersCount }}/{{ totalPlayersCount }}
     </div>
-    <p-button label="Ready" [raised]="true" severity="secondary" (click)="markAsReady()" />
+    <p-button [disabled]="playersToStart()" label="Ready" [raised]="true" severity="secondary"
+      (click)="markAsReady()" />
   </div>
 
   <div class="deck-container">
@@ -78,3 +62,5 @@
     <h4>Round Number: </h4>
   </div>
 </div>
+
+<app-player-forms *ngIf="!isAuthenticated" [saveCallback]="joinLobby.bind(this)"></app-player-forms>

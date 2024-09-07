@@ -4,7 +4,8 @@ import { GameService } from '../services/game.service';
 import { LobbyService, PlayerReadyDTO } from '../services/lobby.service';
 import { ServerGameMessage } from '../services/server.service';
 import { Card, Turn } from '../models/turn';
-import { PlayerPoints } from '../models/player';
+import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-room',
@@ -12,8 +13,7 @@ import { PlayerPoints } from '../models/player';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
-  messages: string[] = [];
-  players: PlayerReadyDTO[] = [];
+  players: Map<string, PlayerInfo> = new Map;
   userName!: string;
   roomLink: string = '';
   profilePicture!: string;
@@ -27,11 +27,12 @@ export class GameComponent {
   ];
   roomId: string | null = null;
   isValidGuid: boolean = false;
-  ready = false;
+  isAuthenticated: boolean = false;
+  ready: boolean = false;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
-  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -42,20 +43,28 @@ export class GameComponent {
         return
       }
 
-      this.lobbyService.joinLobby(this.roomId).subscribe(x => {
-        this.players = x!.players;
-        this.totalPlayersCount = this.players.length;
-
-        this.gameService.auth();
-        this.gameService.emitter.subscribe(x => {
-          this.handleServerGameMessage(x);
-        });
-      });
+      if (!this.authService.isUserAuthenticated()) {
+        return
+      }
+      //load component player
+      this.joinLobby();
 
     });
   }
 
-  //todo999 form pra inputar name foto quando entrar por link
+  joinLobby() {
+    this.isAuthenticated = true;
+
+    this.lobbyService.joinLobby(this.roomId!).subscribe(x => {
+      this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
+      this.totalPlayersCount = this.players.size;
+
+      this.gameService.auth();
+      this.gameService.emitter.subscribe(x => {
+        this.handleServerGameMessage(x);
+      });
+    });
+  }
   //todo dar pull no back para playerInfo.player.data.name
 
   handleServerGameMessage(message: ServerGameMessage) {
@@ -80,11 +89,25 @@ export class GameComponent {
         return this.handleSetEnded(message.data);
       case 'GameEnded':
         return this.handleGameEnded(message.data);
+      case 'PlayerJoined':
+        return this.handlePlayerJoined(message.data);
     }
   }
 
+  handlePlayerJoined(data: Player) {
+    this.players.set(getPlayerId(data), getPlayerInfo(data))
+  }
 
-  //fazer handles
+  handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
+    const player = this.players.get(data.player_id)
+
+    if (!player) {
+      console.error('nao achou o player')
+      return
+    }
+
+    player.ready = this.ready;
+  }
 
   handleGameEnded(data: null) {
     //game terminou
@@ -92,29 +115,45 @@ export class GameComponent {
 
   handleSetEnded(data: PlayerPoints) {
     //fim do set, retorna um dicionario com id do player e o numero de pontos
+    for (const [id, lifes] of data) {
+      const player = this.players.get(id)
+
+      player!.lifes = lifes;
+    }
   }
 
   handleSetStart(data: Card) {
     //coringa
+    for (const player of this.players.values()) {
+      player.setInfo = null
+    }
   }
 
   handlePlayerDeck(data: Card[]) {
     //cartas do jogador
     //mostar as cartas na tela do jogador
-
   }
 
   handleRoundEnded(data: PlayerPoints) {
     //round terminou, retorna um dicionario com id do player e o numero de vidas atualizada
+    for (const [id, points] of data) {
+      const player = this.players.get(id)
+
+      player!.setInfo!.points = points;
+    }
   }
 
   handlePlayerBidded(data: { player_id: string; bid: number; }) {
     //player apostou o valor
     //mostrar valor na tela para os outros tchos
-  }
+    const player = this.players.get(data.player_id)
 
-  handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
-    //player deu ready
+    if (player?.setInfo) {
+      player.setInfo.bid = data.bid
+    }
+    else {
+      player!.setInfo = { bid: data.bid, points: 0 }
+    }
   }
 
   handleTurnPlayed(data: { turn: Turn; }) {
@@ -130,60 +169,28 @@ export class GameComponent {
     //mostrar qual tcho deve apostar suas bids
   }
 
+  getHearts(lifes: number) {
+    return Array(lifes).fill(null)
+  }
 
-  checkAllPlayersReady() {
-    this.allPlayersReady = this.readyPlayersCount === this.totalPlayersCount && this.readyPlayersCount >= 2;
+  getPoints(player: PlayerInfo) {
+    if (player.setInfo) {
+      return Array(player.setInfo.points).fill(null)
+    }
+    return []
+  }
+
+  getMapEntries() {
+    return Array.from(this.players.values());
   }
 
   markAsReady() {
-    // TODO this should be handled in handlePlayerStatusChange
-    //
-    // this.players.forEach(player => {
-    //   if (player.player.data.name === this.userName) {
-    //     player.ready = true;
-    //   }
-    // });
-    // this.readyPlayersCount = this.getReadyPlayers().length;
-    // this.checkAllPlayersReady();
-
     this.ready = !this.ready;
     this.gameService.sendGameMessage({ type: "PlayerStatusChange", data: { ready: this.ready } })
   }
 
-  getReadyPlayers() {
-    return this.players.filter(playerReadyDTO => playerReadyDTO.ready);
-  }
-
-  displayPlayers() {
-    this.players.forEach(playerReadyDTO => {
-      console.log(`Player: ${playerReadyDTO.player.data.name}, Ready: ${playerReadyDTO.ready}`);
-    })
-  }
-
-  generateRoomLink() {
-    this.roomLink = ``;
-    const content1 = document.createElement('textarea');
-    content1.style.position = 'fixed';
-    content1.style.left = '0';
-    content1.style.top = '0';
-    content1.style.opacity = '0';
-    content1.value = this.roomLink;
-    document.body.appendChild(content1);
-    content1.focus();
-    content1.select();
-    document.execCommand('copy');
-    document.body.removeChild(content1);
-
-    var button = document.querySelector('.custom-button');
-    button!.classList.add('clicked');
-    setTimeout(function () {
-      button!.classList.remove('clicked');
-    }, 200);
-  }
-
-  getHearts(playerKey: string | number): any[] {
-    const hearts = new Array(5).fill(0);
-    return hearts;
+  playersToStart() {
+    return this.players.size > 1
   }
 
   ngAfterViewInit() {

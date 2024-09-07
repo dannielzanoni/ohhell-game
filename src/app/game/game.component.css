@@ -107,51 +107,6 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.chat-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 300px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 5px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.room-link {
-  background: #333;
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #ccc;
-}
-
-#messages {
-  list-style-type: none;
-  margin: 0;
-  padding: 10px;
-  flex-grow: 1;
-  overflow-y: auto;
-  max-height: calc(100vh - 140px);
-}
-
-#messages > li {
-  padding: 0.5rem 1rem;
-}
-
-#messages > li:nth-child(odd) {
-  background: #efefef;
-}
-
-#form {
-  background: rgba(0, 0, 0, 0.15);
-  display: flex;
-  height: 3rem;
-  box-sizing: border-box;
-  backdrop-filter: blur(10px);
-}
-
 #input {
   border: none;
   flex-grow: 1;
@@ -170,6 +125,10 @@ body {
   border-radius: 3px;
   outline: none;
   color: #fff;
+}
+
+.data-player {
+  margin-top: 5px;
 }
 
 .hearts {
@@ -327,10 +286,6 @@ body {
 .card-back img:nth-child(3) {
   z-index: 3;
   transform: translateX(-1rem);
-}
-
-.data-player {
-  margin-top: 1.5rem;
 }
 
 .info {
