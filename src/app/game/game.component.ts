@@ -18,17 +18,14 @@ export class GameComponent {
   roomLink: string = '';
   profilePicture!: string;
   readyPlayersCount: number = 0;
-  totalPlayersCount: number = 0;
   allPlayersReady: boolean = false;
-  cards = [
-    '../assets/cards/1ouro.jpg',
-    '../assets/cards/2ouro.jpg',
-    '../assets/cards/3ouro.jpg'
-  ];
   roomId: string | null = null;
   isValidGuid: boolean = false;
   isAuthenticated: boolean = false;
   ready: boolean = false;
+  showBidsContainer: boolean = false;
+  totalCardsInRound: number = 0;
+  cardsPlayer: Card[] | null = null;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -57,7 +54,6 @@ export class GameComponent {
 
     this.lobbyService.joinLobby(this.roomId!).subscribe(x => {
       this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
-      this.totalPlayersCount = this.players.size;
 
       this.gameService.auth();
       this.gameService.emitter.subscribe(x => {
@@ -65,7 +61,14 @@ export class GameComponent {
       });
     });
   }
-  //todo dar pull no back para playerInfo.player.data.name
+
+  totalPlayersCount() {
+    return this.players.size
+  }
+
+  totalReadyPlayersCount() {
+    return [...this.players].filter(x => x[1].ready).length
+  }
 
   handleServerGameMessage(message: ServerGameMessage) {
     switch (message.type) {
@@ -102,7 +105,7 @@ export class GameComponent {
     const player = this.players.get(data.player_id)
 
     if (!player) {
-      console.error('nao achou o player')
+      console.error('nao achou o player', this.players, data.player_id)
       return
     }
 
@@ -132,6 +135,9 @@ export class GameComponent {
   handlePlayerDeck(data: Card[]) {
     //cartas do jogador
     //mostar as cartas na tela do jogador
+    this.totalCardsInRound = data.length;
+
+    this.cardsPlayer = data;
   }
 
   handleRoundEnded(data: PlayerPoints) {
@@ -144,7 +150,6 @@ export class GameComponent {
   }
 
   handlePlayerBidded(data: { player_id: string; bid: number; }) {
-    //player apostou o valor
     //mostrar valor na tela para os outros tchos
     const player = this.players.get(data.player_id)
 
@@ -156,6 +161,11 @@ export class GameComponent {
     }
   }
 
+  handlePlayerBiddingTurn(data: { player_id: string; }) {
+    //mostrar qual tcho deve apostar suas bids
+    this.showBidsContainer = true;
+  }
+
   handleTurnPlayed(data: { turn: Turn; }) {
     //fazer animacao da carta
     //player jogou alguma carta
@@ -165,12 +175,13 @@ export class GameComponent {
     //pintar o player da vez
   }
 
-  handlePlayerBiddingTurn(data: { player_id: string; }) {
-    //mostrar qual tcho deve apostar suas bids
-  }
-
   getHearts(lifes: number) {
     return Array(lifes).fill(null)
+  }
+
+  getBids(): number[] {
+    const bidCount = this.totalCardsInRound;
+    return Array(bidCount + 1).fill(0).map((_, i) => i);
   }
 
   getPoints(player: PlayerInfo) {
@@ -178,6 +189,11 @@ export class GameComponent {
       return Array(player.setInfo.points).fill(null)
     }
     return []
+  }
+
+  getCardsPlayer(): Card[] {
+    const cards = this.cardsPlayer;
+    return [...cards!];
   }
 
   getMapEntries() {
@@ -192,6 +208,7 @@ export class GameComponent {
   playersToStart() {
     return this.players.size > 1
   }
+
 
   ngAfterViewInit() {
     this.adjustCardSize();

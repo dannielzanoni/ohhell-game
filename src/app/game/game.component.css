@@ -316,3 +316,7 @@ body {
   width: 2rem;
   margin-bottom: 25px;
 }
+
+.bid-button {
+  margin-left: 5px;
+}

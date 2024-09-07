@@ -24,9 +24,9 @@
 
   <div *ngIf="!allPlayersReady" class="ready-container">
     <div class="ready-count">
-      Players ready: {{ readyPlayersCount }}/{{ totalPlayersCount }}
+      Players ready: {{ totalReadyPlayersCount() }}/{{ totalPlayersCount() }}
     </div>
-    <p-button [disabled]="playersToStart()" label="Ready" [raised]="true" severity="secondary"
+    <p-button [disabled]="!playersToStart()" label="Ready" [raised]="true" severity="secondary"
       (click)="markAsReady()" />
   </div>
 
@@ -44,9 +44,14 @@
   </div>
 
   <div *ngIf="allPlayersReady" class="cards-container" #cardsContainer>
-    <div class="card" *ngFor="let card of cards">
+    <div class="card" *ngFor="let card of getCardsPlayer()">
       <img [src]="card" (click)="moveToCenter($event)" />
     </div>
+  </div>
+
+  <div class="bid-container" *ngIf="showBidsContainer">
+    <p-button class="bid-button" *ngFor="let bid of getBids()" [label]="bid.toString()" [raised]="true"
+      severity="secondary"></p-button>
   </div>
 
   <div class="info">
