@@ -3,8 +3,8 @@
     <h1 class="title">Oh-Hell Game</h1>
     <!-- //todo integrar com authservice disabled -->
     <p-button label="Create Game" [raised]="true" severity="danger" (click)="createGame()"
-      [disabled]="!isAuthenticated" />
-    <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewGames()" [disabled]="!isAuthenticated" />
+      [disabled]="!isAuthenticated()" />
+    <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewGames()" [disabled]="!isAuthenticated()" />
     <p-button label="How to Play" [raised]="true" severity="danger" (click)="openHowToPlay()" />
     <p-button severity="contrast" (click)="openLink()">
       <ng-template pTemplate="content">

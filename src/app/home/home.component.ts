@@ -14,10 +14,8 @@ export class HomeComponent {
   userName: string | null = null;
   selectedPicture: string = '';
   profilePictures: string[] = [];
-  isAuthenticated: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
-    this.isAuthenticated = authService.isUserAuthenticated();
     this.userName = authService.getUserName();
   }
 
@@ -38,6 +36,10 @@ export class HomeComponent {
 
   openLink() {
     window.open('https://github.com/dannielzanoni/ohhell-game', '_blank');
+  }
+
+  isAuthenticated() {
+    return this.authService.isUserAuthenticated()
   }
 
 }
