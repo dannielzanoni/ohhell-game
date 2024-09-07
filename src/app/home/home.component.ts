@@ -10,32 +10,22 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   userName: string | null = null;
   selectedPicture: string = '';
   profilePictures: string[] = [];
+  isAuthenticated: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
-    const claims = authService.getClaims();
-
-    //todo mover username para authservice, nao fazer validacao aqui!!!!!!!!!!!!
-    this.userName = claims?.name || null;
-  }
-
-  ngOnInit(): void {
-    for (let i = 1; i <= 30; i++) {
-      this.profilePictures.push(`../../assets/profile_pictures/${i}.png`);
-    }
+    this.isAuthenticated = authService.isUserAuthenticated();
+    this.userName = authService.getUserName();
   }
 
   async createGame() {
     //todo validar se o cara selecionou foto
-    const photoIndex = Math.floor(Math.random() * this.profilePictures.length)
-
-    await this.authService.login(this.userName!, photoIndex);
 
     const lobby = await firstValueFrom(this.lobbyService.createGame());
-    this.router.navigate(['/game', lobby.lobby_id.$oid]);
+    this.router.navigate(['/game', lobby.lobby_id]);
   }
 
   openHowToPlay() {
@@ -44,10 +34,6 @@ export class HomeComponent implements OnInit {
 
   viewGames() {
     this.router.navigate(['/viewgames']);
-  }
-
-  selectPicture(picture: string) {
-    this.selectedPicture = picture;
   }
 
   openLink() {

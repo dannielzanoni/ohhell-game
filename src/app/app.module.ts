@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
+import { PlayerFormsComponent } from './player-forms/player-forms.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { HowToPlayComponent } from './how-to-play/how-to-play.component';
     HomeComponent,
     GameComponent,
     ViewGamesComponent,
-    HowToPlayComponent
+    HowToPlayComponent,
+    PlayerFormsComponent
   ],
   imports: [
     BrowserModule,

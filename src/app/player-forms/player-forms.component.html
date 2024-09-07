@@ -1,0 +1,16 @@
+<div class="player-preview">
+    <p-floatLabel style="margin-bottom: 20px;">
+        <input id="username" type="text" pInputText [(ngModel)]="userName" />
+        <label for="username">Username</label>
+        <p-button [ngStyle]="{ 'margin-left': '10px' }" [raised]="true" severity="secondary" (click)="savePlayer()"
+            [disabled]="buttonDisabled()"> <ng-template pTemplate="icon">
+                <img src="../../assets/save.png" alt="Save Icon" style="width: 20px; height: 20px;" />
+            </ng-template>
+        </p-button>
+
+    </p-floatLabel>
+    <div class="profile-pictures">
+        <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"
+            (click)="selectPictureHandler(picture)" alt="Profile Picture" />
+    </div>
+</div>
