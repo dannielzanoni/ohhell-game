@@ -12,7 +12,6 @@ export interface ViewLobbyDTO {
 
 export interface JoinLobbyDTO {
   id: string;
-  //ver players q tao ready
   players: PlayerReadyDTO[];
 }
 
@@ -22,7 +21,7 @@ export interface PlayerReadyDTO {
 }
 
 type CreateGame = {
-  lobby_id: { $oid: string };
+  lobby_id: string;
 }
 
 type GetLobbyDto = {
@@ -48,24 +47,12 @@ export class LobbyService {
 
   joinLobby(id: string) {
     const token = localStorage.getItem('JWT_TOKEN');
-    if (!token) {
-      //return erro
-    }
-
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
     return this.client.put<JoinLobbyDTO>(`${environment.api_url}/lobby/${id}`, {}, { headers })
-      .pipe(
-        catchError((error) => {
-          if (error.status === 401) {
-            this.router.navigate(['/'], { queryParams: { disableButtons: true } });
-          }
-          return of(null);
-        })
-      );
   }
 
   createGame() {
