@@ -13,7 +13,8 @@ export type ServerGameMessage =
   | { type: 'PlayerDeck'; data: Card[] }
   | { type: 'SetStart'; data: Card }
   | { type: 'SetEnded'; data: PlayerPoints }
-  | { type: 'GameEnded'; data: null };
+  | { type: 'GameEnded'; data: null }
+  | { type: 'PlayerJoined'; data: Player; }
 
 // Server Message
 export type ServerMessage =
