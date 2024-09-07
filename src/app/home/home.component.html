@@ -1,7 +1,6 @@
 <div class="home-container">
   <div class="options">
     <h1 class="title">Oh-Hell Game</h1>
-    <!-- //todo integrar com authservice disabled -->
     <p-button label="Create Game" [raised]="true" severity="danger" (click)="createGame()"
       [disabled]="!isAuthenticated()" />
     <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewGames()" [disabled]="!isAuthenticated()" />

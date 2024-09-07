@@ -1,8 +1,6 @@
 import { Player, PlayerPoints } from "../models/player";
 import { Card, Turn } from "../models/turn";
 
-
-// Server Game Message
 export type ServerGameMessage =
   | { type: 'PlayerTurn'; data: { player_id: string } }
   | { type: 'TurnPlayed'; data: { turn: Turn } }
@@ -16,23 +14,8 @@ export type ServerGameMessage =
   | { type: 'GameEnded'; data: null }
   | { type: 'PlayerJoined'; data: Player; }
 
-// Server Message
-export type ServerMessage =
-  | { type: "Game"; data: ServerGameMessage }
-  | { type: "Authorized"; data: Player };
-
-
-export function deserializeServerMessage(json: string): ServerMessage {
+export function deserializeServerMessage(json: string): ServerGameMessage {
   const parsed = JSON.parse(json);
 
-  // You can add further validation here if needed
-  switch (parsed.type) {
-    case "Game":
-      return { type: "Game", data: parsed.data as ServerGameMessage };
-    case "Error":
-      return { type: "Authorized", data: parsed.data as Player };
-    default:
-      console.error("Unknown message type ", parsed);
-      throw new Error("Unknown message type",);
-  }
+  return parsed as ServerGameMessage;
 }

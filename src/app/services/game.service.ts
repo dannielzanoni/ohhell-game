@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { deserializeServerMessage, ServerGameMessage, ServerMessage } from './server.service';
+import { deserializeServerMessage, ServerGameMessage } from './server.service';
 import { Router } from '@angular/router';
 import { ClientGameMessage, ClientMessage } from './client.service';
 import { environment } from '../../environments/environment';
@@ -39,14 +39,7 @@ export class GameService {
         const message = deserializeServerMessage(event.data);
         console.log('server: ', message);
 
-        switch (message.type) {
-          case 'Game':
-            return this.emitter.emit(message.data);
-          case 'Authorized':
-            return console.log('Authorized', message.data);
-          default:
-            throw new Error('Unknown message type');
-        }
+        return this.emitter.emit(message);
       };
 
       this.socket.onerror = (error: Event) => {
