@@ -18,7 +18,7 @@
           <td>Test room</td>
           <td>{{ lobby.player_count }}/10</td>
           <td>Waiting</td>
-          <td><button class="btn-join">Join</button></td>
+          <td><button class="btn-join" (click)="joinLobby(lobby)">Join</button></td>
         </tr>
       </tbody>
     </table>
