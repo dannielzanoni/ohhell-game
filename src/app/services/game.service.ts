@@ -27,7 +27,7 @@ export class GameService {
     this.socket = new WebSocket(environment.websocket_url);
 
     this.socket.onopen = () => {
-      this.sendClientMessage({ type: 'Auth', data: token });
+      this.sendClientMessage({ type: 'Auth', data: { token } });
     };
 
     this.handleSocket();

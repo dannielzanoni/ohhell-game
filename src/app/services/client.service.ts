@@ -16,4 +16,4 @@ export function serializeMessage(message: ClientGameMessage): string {
 
 export type ClientMessage =
   | { type: 'Game'; data: ClientGameMessage }
-  | { type: 'Auth'; data: string };
+  | { type: 'Auth'; data: { token: string } };
