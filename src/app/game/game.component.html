@@ -41,13 +41,13 @@
   </div>
   <div class="joker-container" *ngIf="isAuthenticated">
     <div class="card">
-      <img src="../assets/cards/3ouro.jpg">
+      <img src="getCardImage(trump)">
     </div>
   </div>
 
   <div class="cards-container" #cardsContainer>
-    <div class="card" *ngFor="let card of getCardsPlayer()">
-      <img [src]="'../assets/cards/' + translateCards(card) + '.jpg'" (click)="moveToCenter($event)" src="" />
+    <div class="card" *ngFor="let card of cardsPlayer">
+      <img [src]="getCardImage(card)" (click)="moveToCenter($event)" src="" />
     </div>
   </div>
 

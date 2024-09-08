@@ -26,6 +26,7 @@ export class GameComponent {
   showBidsContainer: boolean = false;
   totalCardsInRound: number = 0;
   cardsPlayer: Card[] = [];
+  trump: Card | null = null;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -126,8 +127,9 @@ export class GameComponent {
     }
   }
 
-  handleSetStart(data: Card) {
-    //coringa
+  handleSetStart(data: { trump: Card }) {
+    this.trump = data.trump;
+
     for (const player of this.players.values()) {
       player.setInfo = null
     }
@@ -141,13 +143,8 @@ export class GameComponent {
     this.cardsPlayer = data;
   }
 
-  getCardsPlayer(): Card[] {
-    const cards = this.cardsPlayer;
-    return this.cardsPlayer ? [...this.cardsPlayer] : [];
-  }
-
-  translateCards(card: Card) {
-    return getCardImage(card)
+  getCardImage(card: Card) {
+    return `../assets/cards/${getCardImage(card)}.jpg`
   }
 
   handleRoundEnded(data: PlayerPoints) {

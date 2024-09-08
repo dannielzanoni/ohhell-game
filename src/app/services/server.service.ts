@@ -9,7 +9,7 @@ export type ServerGameMessage =
   | { type: 'PlayerStatusChange'; data: { player_id: string, ready: boolean } }
   | { type: 'RoundEnded'; data: PlayerPoints }
   | { type: 'PlayerDeck'; data: Card[] }
-  | { type: 'SetStart'; data: Card }
+  | { type: 'SetStart'; data: { trump: Card } }
   | { type: 'SetEnded'; data: PlayerPoints }
   | { type: 'GameEnded'; data: null }
   | { type: 'PlayerJoined'; data: Player; }
