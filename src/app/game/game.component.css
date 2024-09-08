@@ -40,6 +40,17 @@ body {
   position: relative;
 }
 
+.floating-form {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background-color: rgba(255, 255, 255, 0);
+  padding: 20px;
+  border-radius: 10px;
+}
+
 .player-square {
   width: 8rem;
   height: 1rem;

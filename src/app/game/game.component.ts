@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService, PlayerReadyDTO } from '../services/lobby.service';
 import { ServerGameMessage } from '../services/server.service';
-import { Card, Turn } from '../models/turn';
+import { Card, getCardImage, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
 
@@ -25,7 +25,7 @@ export class GameComponent {
   ready: boolean = false;
   showBidsContainer: boolean = false;
   totalCardsInRound: number = 0;
-  cardsPlayer: Card[] | null = null;
+  cardsPlayer: Card[] = [];
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -98,7 +98,8 @@ export class GameComponent {
   }
 
   handlePlayerJoined(data: Player) {
-    this.players.set(getPlayerId(data), getPlayerInfo(data))
+    this.players.set(getPlayerId(data), getPlayerInfo(data));
+    // ver como registrar mudanca
   }
 
   handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
@@ -109,7 +110,7 @@ export class GameComponent {
       return
     }
 
-    player.ready = this.ready;
+    player.ready = data.ready;
   }
 
   handleGameEnded(data: null) {
@@ -138,6 +139,15 @@ export class GameComponent {
     this.totalCardsInRound = data.length;
 
     this.cardsPlayer = data;
+  }
+
+  getCardsPlayer(): Card[] {
+    const cards = this.cardsPlayer;
+    return this.cardsPlayer ? [...this.cardsPlayer] : [];
+  }
+
+  translateCards(card: Card) {
+    return getCardImage(card)
   }
 
   handleRoundEnded(data: PlayerPoints) {
@@ -189,11 +199,6 @@ export class GameComponent {
       return Array(player.setInfo.points).fill(null)
     }
     return []
-  }
-
-  getCardsPlayer(): Card[] {
-    const cards = this.cardsPlayer;
-    return [...cards!];
   }
 
   getMapEntries() {

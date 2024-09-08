@@ -1,4 +1,4 @@
-<div class="container" *ngIf="isAuthenticated">
+<div class="container">
   <div>
     <div class="table-container">
       <div class="table">
@@ -20,9 +20,11 @@
         </div>
       </div>
     </div>
+    <app-player-forms *ngIf="!isAuthenticated" [saveCallback]="joinLobby.bind(this)"
+      class="floating-form"></app-player-forms>
   </div>
 
-  <div *ngIf="!allPlayersReady" class="ready-container">
+  <div *ngIf="!allPlayersReady && isAuthenticated" class="ready-container">
     <div class="ready-count">
       Players ready: {{ totalReadyPlayersCount() }}/{{ totalPlayersCount() }}
     </div>
@@ -30,22 +32,22 @@
       (click)="markAsReady()" />
   </div>
 
-  <div class="deck-container">
+  <div class="deck-container" *ngIf="isAuthenticated">
     <div class="card-back">
       <img src="../assets/cards/back_card.jpg">
       <img src="../assets/cards/back_card.jpg">
       <img src="../assets/cards/back_card.jpg">
     </div>
   </div>
-  <div class="joker-container">
+  <div class="joker-container" *ngIf="isAuthenticated">
     <div class="card">
       <img src="../assets/cards/3ouro.jpg">
     </div>
   </div>
 
-  <div *ngIf="allPlayersReady" class="cards-container" #cardsContainer>
+  <div class="cards-container" #cardsContainer>
     <div class="card" *ngFor="let card of getCardsPlayer()">
-      <img [src]="card" (click)="moveToCenter($event)" />
+      <img [src]="'../assets/cards/' + translateCards(card) + '.jpg'" (click)="moveToCenter($event)" src="" />
     </div>
   </div>
 
@@ -67,5 +69,3 @@
     <h4>Round Number: </h4>
   </div>
 </div>
-
-<app-player-forms *ngIf="!isAuthenticated" [saveCallback]="joinLobby.bind(this)"></app-player-forms>
