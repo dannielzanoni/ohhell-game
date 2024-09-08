@@ -25,6 +25,7 @@ export type PlayerInfo = {
     data: Player;
     ready: boolean;
     setInfo: SetInfo | null;
+    bidding: boolean;
 }
 
 export type SetInfo = {
@@ -44,7 +45,7 @@ export function getPlayerId(player: Player) {
 }
 
 export function getPlayerInfo(player: Player) {
-    return { lifes: 5, data: player, ready: false, setInfo: null }
+    return { lifes: 5, data: player, ready: false, setInfo: null, bidding: false }
 }
 
 //id e pontos do jogador

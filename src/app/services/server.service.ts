@@ -5,7 +5,7 @@ export type ServerGameMessage =
   | { type: 'PlayerTurn'; data: { player_id: string } }
   | { type: 'TurnPlayed'; data: { turn: Turn } }
   | { type: 'PlayerBidded'; data: { player_id: string, bid: number } }
-  | { type: 'PlayerBiddingTurn'; data: { player_id: string } }
+  | { type: 'PlayerBiddingTurn'; data: { player_id: string, possible_bids: number[] } }
   | { type: 'PlayerStatusChange'; data: { player_id: string, ready: boolean } }
   | { type: 'RoundEnded'; data: PlayerPoints }
   | { type: 'PlayerDeck'; data: Card[] }

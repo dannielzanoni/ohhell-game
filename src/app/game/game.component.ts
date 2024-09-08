@@ -27,6 +27,8 @@ export class GameComponent {
   totalCardsInRound: number = 0;
   cardsPlayer: Card[] = [];
   trump: Card | null = null;
+  possible_bids: number[] | null = null;
+
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -168,9 +170,23 @@ export class GameComponent {
     }
   }
 
-  handlePlayerBiddingTurn(data: { player_id: string; }) {
+  handlePlayerBiddingTurn(data: { player_id: string; possible_bids: number[] }) {
     //mostrar qual tcho deve apostar suas bids
+    this.possible_bids = data.player_id == this.authService.getID() ? data.possible_bids : null
+
+    for (const [id, player] of this.players) {
+      player.bidding = data.player_id == id
+    }
+
     this.showBidsContainer = true;
+  }
+
+  sendBid(bid: number) {
+    this.gameService.sendGameMessage({ type: "PutBid", data: { bid } })
+  }
+
+  bidTurn() {
+    return this.possible_bids != null
   }
 
   handleTurnPlayed(data: { turn: Turn; }) {
@@ -179,16 +195,19 @@ export class GameComponent {
   }
 
   handlePlayerTurn(data: { player_id: string; }) {
-    //pintar o player da vez
+    //pintar o player da vez´
+    this.showBidsContainer = false;
   }
 
   getHearts(lifes: number) {
     return Array(lifes).fill(null)
   }
 
-  getBids(): number[] {
-    const bidCount = this.totalCardsInRound;
-    return Array(bidCount + 1).fill(0).map((_, i) => i);
+
+  validBid(bid: number) {
+    const currentBidding = [...this.players].map(x => x[1].setInfo?.bid || 0).reduce((acc, x) => acc + x, 0);
+
+    return currentBidding + bid != this.totalCardsInRound;
   }
 
   getPoints(player: PlayerInfo) {
@@ -210,7 +229,6 @@ export class GameComponent {
   playersToStart() {
     return this.players.size > 1
   }
-
 
   ngAfterViewInit() {
     this.adjustCardSize();

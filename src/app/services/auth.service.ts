@@ -55,6 +55,10 @@ export class AuthService {
     return this.getClaims()?.name || null;
   }
 
+  getID() {
+    return this.getClaims()?.id || null;
+  }
+
   async updateProfile(nickname: string, picture: string) {
     const response = await firstValueFrom(this.updateProfileHttp(nickname, picture))
 

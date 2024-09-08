@@ -331,3 +331,7 @@ body {
 .bid-button {
   margin-left: 5px;
 }
+
+.bidding {
+  border: 3px solid green;
+}
