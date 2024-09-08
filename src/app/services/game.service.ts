@@ -56,7 +56,7 @@ export class GameService {
 
   private sendClientMessage(message: ClientMessage) {
     if (this.socket) {
-      console.log('Client Message: ', message);
+      console.log('client: ', message);
       const json = JSON.stringify(message);
       this.socket.send(json);
     } else {
