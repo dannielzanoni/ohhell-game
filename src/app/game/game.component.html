@@ -39,9 +39,9 @@
       <img src="../assets/cards/back_card.jpg">
     </div>
   </div>
-  <div class="joker-container" *ngIf="isAuthenticated">
+  <div class="joker-container" *ngIf="isAuthenticated && trump">
     <div class="card">
-      <img src="getCardImage(trump)">
+      <img [src]="getCardImage(trump)">
     </div>
   </div>
 
