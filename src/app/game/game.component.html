@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <app-player-forms *ngIf="!isAuthenticated()" [saveCallback]="joinLobby.bind(this)"
+    <app-player-forms *ngIf="!isAuthenticated()" [saveCallback]="join.bind(this)"
       class="floating-form"></app-player-forms>
   </div>
 

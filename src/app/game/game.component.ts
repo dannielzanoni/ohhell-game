@@ -40,12 +40,15 @@ export class GameComponent {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.join();
+  }
 
+  join() {
+    this.route.paramMap.subscribe(params => {
       const roomId = params.get('id');
       if (roomId == null) {
         this.router.navigate(['viewgames']);
-        return
+        return;
       }
 
       if (this.authService.isUserAuthenticated()) {
