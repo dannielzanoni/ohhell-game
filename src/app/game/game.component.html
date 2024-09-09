@@ -5,7 +5,7 @@
         <div *ngFor="let playerInfo of getMapEntries(); let i = index" class="player-square player-{{ i }}">
           <div class="profile-pic" [ngStyle]="{
               'background-image': 'url(' + playerInfo.data.data.picture + ')'
-            }" [ngClass]="{ 'bidding': playerInfo.bidding }"></div>
+            }" [ngClass]="{ 'turn-to-play': playerInfo.turnToPlay }"></div>
           <div class="data-player" [class.ready]="playerInfo.ready">
             <div class="prediction-circle">{{ playerInfo.setInfo?.bid}}</div>
             {{ playerInfo.data.data.name }}

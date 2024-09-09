@@ -26,7 +26,6 @@ export class GameComponent {
   pile: Turn[] = [];
   trump: Card | null = null;
   possible_bids: number[] | null = null;
-  currentPlayer: string | null = null;
   gameState = GameState.NotPlaying;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
@@ -196,7 +195,7 @@ export class GameComponent {
     this.possible_bids = yourTurn ? data.possible_bids : null
 
     for (const [id, player] of this.players) {
-      player.bidding = data.player_id == id
+      player.turnToPlay = data.player_id == id
     }
 
     if (yourTurn) {
@@ -221,7 +220,10 @@ export class GameComponent {
   handlePlayerTurn(data: { player_id: string; }) {
     //pintar o player da vez´
     this.gameState = GameState.Dealing;
-    this.currentPlayer = data.player_id
+
+    for (const [id, player] of this.players) {
+      player.turnToPlay = data.player_id == id
+    }
   }
 
   getHearts(lifes: number) {
@@ -271,7 +273,9 @@ export class GameComponent {
   }
 
   playCard(card: Card) {
-    if (this.currentPlayer == this.authService.getID()) {
+    const me = this.players.get(this.authService.getID()!)
+
+    if (me?.turnToPlay) {
       this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
       this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } })
     }

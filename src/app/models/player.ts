@@ -1,5 +1,3 @@
-import { PlayerReadyDTO } from "../services/lobby.service";
-
 export type Player = {
   type: "Anonymous",
   data: AnonymousPlayer,
@@ -25,7 +23,7 @@ export type PlayerInfo = {
   data: Player;
   ready: boolean;
   setInfo: SetInfo | null;
-  bidding: boolean;
+  turnToPlay: boolean;
 }
 
 export type SetInfo = {
@@ -45,7 +43,7 @@ export function getPlayerId(player: Player) {
 }
 
 export function getPlayerInfo(player: Player) {
-  return { lifes: 5, data: player, ready: false, setInfo: null, bidding: false }
+  return { lifes: 5, data: player, ready: false, setInfo: null, turnToPlay: false }
 }
 
 //id e pontos do jogador
