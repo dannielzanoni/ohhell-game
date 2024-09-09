@@ -51,4 +51,4 @@ export function getPlayerInfo(player: Player) {
 //id e pontos do jogador
 //roundended retorna pontos
 //setendend retorna vidas
-export type PlayerPoints = Map<string, number>;
+export type PlayerPoints = { [key: string]: number };
