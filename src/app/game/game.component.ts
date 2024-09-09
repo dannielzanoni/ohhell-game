@@ -7,6 +7,12 @@ import { Card, getCardImage, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
 
+enum GameState {
+  NotPlaying,
+  Bidding,
+  Dealing,
+}
+
 @Component({
   selector: 'app-room',
   templateUrl: './game.component.html',
@@ -15,19 +21,23 @@ import { AuthService } from '../services/auth.service';
 export class GameComponent {
   players: Map<string, PlayerInfo> = new Map;
   ready: boolean = false;
-  // TODO we can centralize the currentPlayer with the showBidsContainer props
-  // and only diff them based on a gameStage param
-  showBidsContainer: boolean = false;
   totalCardsInRound: number = 0;
   cardsPlayer: Card[] = [];
+  pile: Turn[] = [];
   trump: Card | null = null;
   possible_bids: number[] | null = null;
-  pile: Turn[] = [];
   currentPlayer: string | null = null;
+  gameState = GameState.NotPlaying;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
-  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private gameService: GameService,
+    private lobbyService: LobbyService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -63,6 +73,18 @@ export class GameComponent {
 
   totalReadyPlayersCount() {
     return [...this.players].filter(x => x[1].ready).length
+  }
+
+  playing() {
+    return this.gameState == GameState.Dealing
+  }
+
+  bidding() {
+    return this.gameState == GameState.Bidding
+  }
+
+  notReady() {
+    return this.gameState == GameState.NotPlaying
   }
 
   handleServerGameMessage(message: ServerGameMessage) {
@@ -164,13 +186,17 @@ export class GameComponent {
 
   handlePlayerBiddingTurn(data: { player_id: string; possible_bids: number[] }) {
     //mostrar qual tcho deve apostar suas bids
-    this.possible_bids = data.player_id == this.authService.getID() ? data.possible_bids : null
+    //
+    const yourTurn = data.player_id == this.authService.getID();
+    this.possible_bids = yourTurn ? data.possible_bids : null
 
     for (const [id, player] of this.players) {
       player.bidding = data.player_id == id
     }
 
-    this.showBidsContainer = true;
+    if (yourTurn) {
+      this.gameState = GameState.Bidding;
+    }
   }
 
   sendBid(bid: number) {
@@ -189,7 +215,7 @@ export class GameComponent {
 
   handlePlayerTurn(data: { player_id: string; }) {
     //pintar o player da vez´
-    this.showBidsContainer = false;
+    this.gameState = GameState.Dealing;
   }
 
   getHearts(lifes: number) {

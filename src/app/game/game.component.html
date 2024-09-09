@@ -24,7 +24,7 @@
       class="floating-form"></app-player-forms>
   </div>
 
-  <div *ngIf="!allPlayersReady && isAuthenticated" class="ready-container">
+  <div *ngIf="notReady() && isAuthenticated" class="ready-container">
     <div class="ready-count">
       Players ready: {{ totalReadyPlayersCount() }}/{{ totalPlayersCount() }}
     </div>
@@ -57,7 +57,7 @@
     </div>
   </div>
 
-  <div class="bid-container" *ngIf="showBidsContainer">
+  <div class="bid-container" *ngIf="bidding()">
     <p-button class="bid-button" *ngFor="let bid of possible_bids" [label]="bid.toString()" [raised]="true"
       severity="secondary" [disabled]="" (click)="sendBid(bid)"></p-button>
   </div>
