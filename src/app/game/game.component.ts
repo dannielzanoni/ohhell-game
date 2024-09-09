@@ -48,11 +48,9 @@ export class GameComponent {
         return
       }
 
-      if (!this.authService.isUserAuthenticated()) {
-        return
+      if (this.authService.isUserAuthenticated()) {
+        this.joinLobby(roomId);
       }
-      //load component player
-      this.joinLobby(roomId);
     });
   }
 

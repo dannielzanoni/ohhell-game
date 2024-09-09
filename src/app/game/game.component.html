@@ -24,7 +24,7 @@
       class="floating-form"></app-player-forms>
   </div>
 
-  <div *ngIf="notReady() && isAuthenticated" class="ready-container">
+  <div *ngIf="notReady() && authService.isUserAuthenticated()" class="ready-container">
     <div class="ready-count">
       Players ready: {{ totalReadyPlayersCount() }}/{{ totalPlayersCount() }}
     </div>
@@ -32,14 +32,14 @@
       (click)="markAsReady()" />
   </div>
 
-  <div class="deck-container" *ngIf="isAuthenticated">
+  <div class="deck-container" *ngIf="authService.isUserAuthenticated()">
     <div class="card-back">
       <img src="../assets/cards/back_card.jpg">
       <img src="../assets/cards/back_card.jpg">
       <img src="../assets/cards/back_card.jpg">
     </div>
   </div>
-  <div class="joker-container" *ngIf="isAuthenticated && trump">
+  <div class="joker-container" *ngIf="authService.isUserAuthenticated() && trump">
     <div class="card">
       <img [src]="getCardImage(trump)">
     </div>
