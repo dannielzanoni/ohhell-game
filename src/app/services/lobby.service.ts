@@ -3,7 +3,6 @@ import { environment } from '../../environments/environment';
 import { Injectable } from "@angular/core";
 import { Player } from '../models/player';
 import { Router } from "@angular/router";
-import { catchError, of } from "rxjs";
 
 export interface ViewLobbyDTO {
   id: string;

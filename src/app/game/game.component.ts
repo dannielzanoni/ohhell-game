@@ -136,7 +136,7 @@ export class GameComponent {
 
   handleSetEnded(data: PlayerPoints) {
     //fim do set, retorna um dicionario com id do player e o numero de pontos
-    for (const [id, lifes] of data) {
+    for (const [id, lifes] of Object.entries(data)) {
       const player = this.players.get(id)
 
       player!.lifes = lifes;
@@ -165,7 +165,7 @@ export class GameComponent {
 
   handleRoundEnded(data: PlayerPoints) {
     //round terminou, retorna um dicionario com id do player e o numero de vidas atualizada
-    for (const [id, points] of data) {
+    for (const [id, points] of Object.entries(data)) {
       const player = this.players.get(id)
 
       player!.setInfo!.points = points;
