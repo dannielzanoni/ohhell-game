@@ -28,7 +28,7 @@ export class GameComponent {
   cardsPlayer: Card[] = [];
   trump: Card | null = null;
   possible_bids: number[] | null = null;
-
+  highestCard: Turn | null = null;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -189,9 +189,10 @@ export class GameComponent {
     return this.possible_bids != null
   }
 
-  handleTurnPlayed(data: { turn: Turn; }) {
+  handleTurnPlayed(data: { pile: Turn[] }) {
     //fazer animacao da carta
-    //player jogou alguma carta
+
+    this.highestCard = data.pile[0]
   }
 
   handlePlayerTurn(data: { player_id: string; }) {

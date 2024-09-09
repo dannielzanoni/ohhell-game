@@ -3,7 +3,7 @@ import { Card, Turn } from "../models/turn";
 
 export type ServerGameMessage =
   | { type: 'PlayerTurn'; data: { player_id: string } }
-  | { type: 'TurnPlayed'; data: { turn: Turn } }
+  | { type: 'TurnPlayed'; data: { pile: Turn[] } }
   | { type: 'PlayerBidded'; data: { player_id: string, bid: number } }
   | { type: 'PlayerBiddingTurn'; data: { player_id: string, possible_bids: number[] } }
   | { type: 'PlayerStatusChange'; data: { player_id: string, ready: boolean } }
