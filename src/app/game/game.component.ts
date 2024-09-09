@@ -221,6 +221,7 @@ export class GameComponent {
   handlePlayerTurn(data: { player_id: string; }) {
     //pintar o player da vez´
     this.gameState = GameState.Dealing;
+    this.currentPlayer = data.player_id
   }
 
   getHearts(lifes: number) {
