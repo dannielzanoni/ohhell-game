@@ -73,6 +73,10 @@ export class GameComponent {
     return [...this.players].filter(x => x[1].ready).length
   }
 
+  isAuthenticated() {
+    return this.authService.isUserAuthenticated()
+  }
+
   playing() {
     return this.gameState == GameState.Dealing
   }
