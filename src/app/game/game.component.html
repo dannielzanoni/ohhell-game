@@ -45,9 +45,15 @@
     </div>
   </div>
 
+  <div class="deck-container" #cardsContainer>
+    <div class="card" *ngFor="let turn of pile">
+      <img [src]="getCardImage(turn.card)" src="" />
+    </div>
+  </div>
+
   <div class="cards-container" #cardsContainer>
     <div class="card" *ngFor="let card of cardsPlayer">
-      <img [src]="getCardImage(card)" (click)="moveToCenter($event)" src="" />
+      <img [src]="getCardImage(card)" (click)="playCard(card)" src="" />
     </div>
   </div>
 

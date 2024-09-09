@@ -28,7 +28,7 @@ export class GameComponent {
   cardsPlayer: Card[] = [];
   trump: Card | null = null;
   possible_bids: number[] | null = null;
-  highestCard: Turn | null = null;
+  pile: Turn[] = [];
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -192,7 +192,7 @@ export class GameComponent {
   handleTurnPlayed(data: { pile: Turn[] }) {
     //fazer animacao da carta
 
-    this.highestCard = data.pile[0]
+    this.pile = data.pile
   }
 
   handlePlayerTurn(data: { player_id: string; }) {
@@ -202,13 +202,6 @@ export class GameComponent {
 
   getHearts(lifes: number) {
     return Array(lifes).fill(null)
-  }
-
-
-  validBid(bid: number) {
-    const currentBidding = [...this.players].map(x => x[1].setInfo?.bid || 0).reduce((acc, x) => acc + x, 0);
-
-    return currentBidding + bid != this.totalCardsInRound;
   }
 
   getPoints(player: PlayerInfo) {
@@ -257,12 +250,8 @@ export class GameComponent {
     });
   }
 
-  moveToCenter(event: Event) {
-    const cardElement = event.target as HTMLElement;
-    const currentCenterCard = this.cardsContainer.nativeElement.querySelector('.move-to-center');
-    if (currentCenterCard) {
-      currentCenterCard.classList.remove('move-to-center');
-    }
-    cardElement.classList.add('move-to-center');
+  playCard(card: Card) {
+    this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
+    this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } })
   }
 }
