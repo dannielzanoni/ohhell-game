@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
-import { LobbyService, PlayerReadyDTO } from '../services/lobby.service';
+import { LobbyService } from '../services/lobby.service';
 import { ServerGameMessage } from '../services/server.service';
 import { Card, getCardImage, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
@@ -14,21 +14,16 @@ import { AuthService } from '../services/auth.service';
 })
 export class GameComponent {
   players: Map<string, PlayerInfo> = new Map;
-  userName!: string;
-  roomLink: string = '';
-  profilePicture!: string;
-  readyPlayersCount: number = 0;
-  allPlayersReady: boolean = false;
-  roomId: string | null = null;
-  isValidGuid: boolean = false;
-  isAuthenticated: boolean = false;
   ready: boolean = false;
+  // TODO we can centralize the currentPlayer with the showBidsContainer props
+  // and only diff them based on a gameStage param
   showBidsContainer: boolean = false;
   totalCardsInRound: number = 0;
   cardsPlayer: Card[] = [];
   trump: Card | null = null;
   possible_bids: number[] | null = null;
   pile: Turn[] = [];
+  currentPlayer: string | null = null;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -37,8 +32,8 @@ export class GameComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
 
-      this.roomId = params.get('id');
-      if (this.roomId == null) {
+      const roomId = params.get('id');
+      if (roomId == null) {
         this.router.navigate(['viewgames']);
         return
       }
@@ -47,15 +42,12 @@ export class GameComponent {
         return
       }
       //load component player
-      this.joinLobby();
-
+      this.joinLobby(roomId);
     });
   }
 
-  joinLobby() {
-    this.isAuthenticated = true;
-
-    this.lobbyService.joinLobby(this.roomId!).subscribe(x => {
+  joinLobby(roomId: string) {
+    this.lobbyService.joinLobby(roomId).subscribe(x => {
       this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
 
       this.gameService.auth();
@@ -229,10 +221,6 @@ export class GameComponent {
   }
 
   adjustCardSize() {
-    if (!this.allPlayersReady) {
-      return
-    }
-
     const cards = this.cardsContainer.nativeElement.querySelectorAll('.card img');
     const numberOfCards = cards.length;
     console.log(numberOfCards);
@@ -251,7 +239,9 @@ export class GameComponent {
   }
 
   playCard(card: Card) {
-    this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
-    this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } })
+    if (this.currentPlayer == this.authService.getID()) {
+      this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
+      this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } })
+    }
   }
 }
