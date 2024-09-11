@@ -145,6 +145,8 @@ export class GameComponent {
 
       player!.lifes = lifes;
     }
+
+    this.pile = []
   }
 
   handleSetStart(data: { trump: Card }) {
@@ -174,6 +176,8 @@ export class GameComponent {
 
       player!.setInfo!.points = points;
     }
+
+    this.pile = []
   }
 
   handlePlayerBidded(data: { player_id: string; bid: number; }) {
