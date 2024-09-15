@@ -53,7 +53,7 @@
 
   <div class="cards-container" #cardsContainer>
     <div class="card" *ngFor="let card of cardsPlayer">
-      <img [src]="getCardImage(card)" (click)="playCard(card)" src="" />
+      <img [src]="getCardImage(card)" (click)="!bidding() ? playCard(card) : null" />
     </div>
   </div>
 

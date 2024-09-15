@@ -198,8 +198,6 @@ export class GameComponent {
   }
 
   handlePlayerBiddingTurn(data: { player_id: string; possible_bids: number[] }) {
-    //mostrar qual tcho deve apostar suas bids
-    //
     const yourTurn = data.player_id == this.authService.getID();
     this.possible_bids = yourTurn ? data.possible_bids : null
 
