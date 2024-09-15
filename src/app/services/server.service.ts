@@ -11,7 +11,7 @@ export type ServerGameMessage =
   | { type: 'PlayerDeck'; data: Card[] }
   | { type: 'SetStart'; data: { trump: Card } }
   | { type: 'SetEnded'; data: PlayerPoints }
-  | { type: 'GameEnded'; data: null }
+  | { type: 'GameEnded'; data: { winner: string, lifes: PlayerPoints } }
   | { type: 'PlayerJoined'; data: Player; }
 
 export function deserializeServerMessage(json: string): ServerGameMessage {

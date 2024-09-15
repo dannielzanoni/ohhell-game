@@ -134,17 +134,22 @@ export class GameComponent {
     player.ready = data.ready;
   }
 
-  handleGameEnded(data: null) {
+  handleGameEnded(data: { winner: string, lifes: PlayerPoints }) {
     //game terminou
+
+    this.updateLifes(data.lifes);
   }
 
-  handleSetEnded(data: PlayerPoints) {
-    //fim do set, retorna um dicionario com id do player e o numero de pontos
+  private updateLifes(data: PlayerPoints) {
     for (const [id, lifes] of Object.entries(data)) {
-      const player = this.players.get(id)
+      const player = this.players.get(id);
 
       player!.lifes = lifes;
     }
+  }
+
+  handleSetEnded(data: PlayerPoints) {
+    this.updateLifes(data)
 
     this.pile = []
   }
