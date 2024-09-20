@@ -39,25 +39,27 @@
       <img src="../assets/cards/back_card.jpg">
     </div>
   </div>
-  <div class="joker-container" *ngIf="isAuthenticated() && trump">
-    <div class="card">
-      <img [src]="getCardImage(trump)">
+  <div class="joker-container" *ngIf="isAuthenticated() && upcard">
+    <div class="joker">
+      <img [src]="getCardImage(upcard)">
     </div>
   </div>
 
-  <div class="deck-container" #cardsContainer>
-    <div class="card" *ngFor="let turn of pile">
-      <img [src]="getCardImage(turn.card)" src="" />
+  <div class="pile-container" #cardsContainer>
+    <div class="pile" *ngFor="let turn of pile; let i = index"
+      [ngStyle]="{'--index': pile.length - i, 'left.px': i * 20, 'transform': 'rotate(' + (i * 5) + 'deg)'}">
+      <img [src]="getCardImage(turn.card)" />
     </div>
   </div>
 
   <div class="cards-container" #cardsContainer>
     <div class="card" *ngFor="let card of cardsPlayer">
-      <img [src]="getCardImage(card)" (click)="!bidding() ? playCard(card) : null" />
+      <img [src]="getCardImage(card)" [class.disabled]="gameState !== GameState.Dealing"
+        (click)="handleCardClick($event, card)" />
     </div>
   </div>
 
-  <div class="bid-container" *ngIf="bidding()">
+  <div class="bid-container" *ngIf="bidding() && !this.setOrRoundEnded">
     <p-button class="bid-button" *ngFor="let bid of possible_bids" [label]="bid.toString()" [raised]="true"
       severity="secondary" [disabled]="" (click)="sendBid(bid)"></p-button>
   </div>

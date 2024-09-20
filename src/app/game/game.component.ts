@@ -24,9 +24,11 @@ export class GameComponent {
   totalCardsInRound: number = 0;
   cardsPlayer: Card[] = [];
   pile: Turn[] = [];
-  trump: Card | null = null;
+  upcard: Card | null = null;
   possible_bids: number[] | null = null;
   gameState = GameState.NotPlaying;
+  GameState = GameState;
+  setOrRoundEnded: boolean = false;
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -120,7 +122,6 @@ export class GameComponent {
 
   handlePlayerJoined(data: Player) {
     this.players.set(getPlayerId(data), getPlayerInfo(data));
-    // ver como registrar mudanca
   }
 
   handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
@@ -135,8 +136,6 @@ export class GameComponent {
   }
 
   handleGameEnded(data: { winner: string, lifes: PlayerPoints }) {
-    //game terminou
-
     this.updateLifes(data.lifes);
   }
 
@@ -149,13 +148,17 @@ export class GameComponent {
   }
 
   handleSetEnded(data: PlayerPoints) {
-    this.updateLifes(data)
+    setTimeout(() => {
+      this.updateLifes(data)
 
-    this.pile = []
+      this.pile = []
+    }, 3000);
+    this.setOrRoundEnded = true;
   }
 
-  handleSetStart(data: { trump: Card }) {
-    this.trump = data.trump;
+  handleSetStart(data: { upcard: Card }) {
+    this.setOrRoundEnded = false;
+    this.upcard = data.upcard;
 
     for (const player of this.players.values()) {
       player.setInfo = null
@@ -163,8 +166,6 @@ export class GameComponent {
   }
 
   handlePlayerDeck(data: Card[]) {
-    //cartas do jogador
-    //mostar as cartas na tela do jogador
     this.totalCardsInRound = data.length;
 
     this.cardsPlayer = data;
@@ -175,14 +176,16 @@ export class GameComponent {
   }
 
   handleRoundEnded(data: PlayerPoints) {
-    //round terminou, retorna um dicionario com id do player e o numero de vidas atualizada
-    for (const [id, points] of Object.entries(data)) {
-      const player = this.players.get(id)
+    setTimeout(() => {
+      for (const [id, points] of Object.entries(data)) {
+        const player = this.players.get(id)
 
-      player!.setInfo!.points = points;
-    }
+        player!.setInfo!.points = points;
+      }
 
-    this.pile = []
+      this.pile = []
+    }, 3000);
+    this.setOrRoundEnded = true;
   }
 
   handlePlayerBidded(data: { player_id: string; bid: number; }) {
@@ -198,6 +201,7 @@ export class GameComponent {
   }
 
   handlePlayerBiddingTurn(data: { player_id: string; possible_bids: number[] }) {
+    this.setOrRoundEnded = false;
     const yourTurn = data.player_id == this.authService.getID();
     this.possible_bids = yourTurn ? data.possible_bids : null
 
@@ -220,12 +224,11 @@ export class GameComponent {
 
   handleTurnPlayed(data: { pile: Turn[] }) {
     //fazer animacao da carta
-
     this.pile = data.pile
   }
 
   handlePlayerTurn(data: { player_id: string; }) {
-    //pintar o player da vez´
+    this.setOrRoundEnded = false;
     this.gameState = GameState.Dealing;
 
     for (const [id, player] of this.players) {
@@ -284,7 +287,34 @@ export class GameComponent {
 
     if (me?.turnToPlay) {
       this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
-      this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } })
+      setTimeout(() => {
+        this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } });
+      }, 200);
     }
+  }
+
+  moveToCenter(event: Event) {
+    const cardElement = event.target as HTMLElement;
+    const currentCenterCard = this.cardsContainer.nativeElement.querySelector('.move-to-center');
+    if (currentCenterCard) {
+      currentCenterCard.classList.remove('move-to-center');
+    }
+    cardElement.classList.add('move-to-center');
+  }
+
+  handleCardClick(event: MouseEvent, card: Card) {
+    const me = this.players.get(this.authService.getID()!);
+
+    if (!me?.turnToPlay || this.bidding()) {
+      return;
+    }
+
+    this.moveToCenter(event);
+
+    setTimeout(() => {
+      if (!this.bidding()) {
+        this.playCard(card);
+      }
+    }, 500);
   }
 }

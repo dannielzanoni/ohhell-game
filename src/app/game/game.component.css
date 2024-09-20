@@ -249,13 +249,26 @@ body {
   transition: transform 0.1s ease-in-out, width 0.2s ease-in-out;
 }
 
+.joker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5px;
+  flex-shrink: 1;
+}
+
+.joker img {
+  border-radius: 10px;
+  width: 7rem;
+}
+
 .card img:hover {
   cursor: pointer;
   transform: scale(1.1);
 }
 
 .card img.move-to-center {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(0%, -30rem);
@@ -263,8 +276,19 @@ body {
   z-index: 50;
 }
 
-.joker-container img {
+.joker-container {
+  position: fixed;
   margin-right: 20rem;
+}
+
+.joker-container img {
+  position: fixed;
+  margin-right: 15rem;
+}
+
+.deck-container {
+  position: fixed;
+  margin-right: 15rem;
 }
 
 .card-back {
@@ -334,4 +358,35 @@ body {
 
 .turn-to-play {
   border: 3px solid green;
+}
+
+.bid-container {
+  margin-top: 14rem;
+  position: fixed;
+  z-index: 1000;
+}
+
+.pile-container {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  margin-bottom: 10rem;
+  z-index: 51;
+}
+
+.pile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: bottom left;
+}
+
+.pile img {
+  border-radius: 10px;
+  width: 7rem;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.pile {
+  z-index: var(--index);
 }
