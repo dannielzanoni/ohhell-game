@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
 import { GameInfoDto, ServerMessage } from '../services/server.service';
-import { Card, getCardImage, Turn } from '../models/turn';
+import { Card, getCardImage, Rank, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
 
@@ -29,6 +29,11 @@ export class GameComponent {
   gameState = GameState.NotPlaying;
   GameState = GameState;
   setOrRoundEnded: boolean = false;
+  collapsed: boolean = false;
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
+  }
 
   @ViewChild('cardsContainer') cardsContainer!: ElementRef;
 
@@ -364,4 +369,33 @@ export class GameComponent {
       }
     }, 500);
   }
+
+  getJokerValue(): Rank | null {
+    const currentRank = this.upcard?.rank;
+    return currentRank ? this.getNextRank(currentRank) : null;
+  }
+
+  getNextRank(rank: Rank): Rank | null {
+    const rankOrder = [
+      Rank.One,
+      Rank.Two,
+      Rank.Three,
+      Rank.Four,
+      Rank.Five,
+      Rank.Six,
+      Rank.Seven,
+      Rank.Ten,
+      Rank.Eleven,
+      Rank.Twelve,
+    ];
+
+    const currentIndex = rankOrder.indexOf(rank);
+
+    if (currentIndex >= 0) {
+      return rankOrder[(currentIndex + 1) % rankOrder.length];
+    }
+
+    return null;
+  }
+
 }

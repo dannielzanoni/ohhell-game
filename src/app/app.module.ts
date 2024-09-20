@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
 import { PlayerFormsComponent } from './player-forms/player-forms.component';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { PlayerFormsComponent } from './player-forms/player-forms.component';
     InputTextModule,
     BrowserAnimationsModule,
     ButtonModule,
-    FloatLabelModule
+    FloatLabelModule,
+    TabViewModule
   ],
   providers: [
 

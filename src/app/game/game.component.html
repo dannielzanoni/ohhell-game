@@ -65,15 +65,26 @@
   </div>
 
   <div class="info">
-    <h3>Game Info</h3>
-    <img class="info-cards" src="../assets/cards/1ouro.jpg" alt="">
-    <img class="arrow" src="../assets/red_arrow.png" alt="">
-    <img class="info-cards" src="../assets/cards/1espada.jpg" alt="">
-    <img class="arrow" src="../assets/red_arrow.png" alt="">
-    <img class="info-cards" src="../assets/cards/1copas.jpg" alt="">
-    <img class="arrow" src="../assets/red_arrow.png" alt="">
-    <img class="info-cards" src="../assets/cards/1paus.jpg" alt="">
-    <h4>Joker: </h4>
-    <h4>Round Number: </h4>
+    <button pButton icon="{{ collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up' }}" (click)="toggleCollapse()"
+      label="{{ collapsed ? 'Expand' : 'Collapse' }}" class="p-button-rounded p-button-text">
+    </button>
+    <p-tabView *ngIf="!collapsed" styleClass="custom-tabview">
+      <p-tabPanel header="Game Info">
+        <h4>Suit Order:</h4>
+        <img class="info-cards" src="../assets/cards/1ouro.jpg" alt="">
+        <img class="arrow" src="../assets/red_arrow.png" alt="">
+        <img class="info-cards" src="../assets/cards/1espada.jpg" alt="">
+        <img class="arrow" src="../assets/red_arrow.png" alt="">
+        <img class="info-cards" src="../assets/cards/1copas.jpg" alt="">
+        <img class="arrow" src="../assets/red_arrow.png" alt="">
+        <img class="info-cards" src="../assets/cards/1paus.jpg" alt="">
+        <h4>Joker: {{ getJokerValue() }}</h4>
+        <h4>Round Number: {{ this.totalCardsInRound}}</h4>
+        <h4>Order: 4 → 5, 6, 7, 10, 11(Q), 12(K), 1, 2, 3</h4>
+      </p-tabPanel>
+      <p-tabPanel header="Sounds"></p-tabPanel>
+      <p-tabPanel header="View"></p-tabPanel>
+    </p-tabView>
   </div>
+
 </div>
