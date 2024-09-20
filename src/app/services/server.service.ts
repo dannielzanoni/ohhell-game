@@ -2,10 +2,16 @@ import { Player, PlayerPoints } from "../models/player";
 import { Card, Turn } from "../models/turn";
 
 export type GameInfoDto = {
-  lifes: PlayerPoints,
-  points: PlayerPoints,
+  info: PlayerInfoDto[],
   deck: Card[],
   current_player: string
+}
+
+export type PlayerInfoDto = {
+  id: string,
+  lifes: number,
+  bid: number,
+  rounds: number
 }
 
 export type ServerMessage =

@@ -136,16 +136,11 @@ export class GameComponent {
     player.ready = true
     this.cardsPlayer = data.deck
 
-    for (const [id, lifes] of Object.entries(data.lifes)) {
-      const player = this.players.get(id)
+    for (const info of data.info) {
+      const player = this.players.get(info.id)
 
-      player!.lifes = lifes;
-    }
-
-    for (const [id, points] of Object.entries(data.points)) {
-      const player = this.players.get(id)
-
-      player!.setInfo!.points = points;
+      player!.lifes = info.lifes;
+      player!.setInfo! = { points: info.rounds, bid: info.bid };
     }
   }
 
