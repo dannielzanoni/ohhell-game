@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
-import { ServerGameMessage } from '../services/server.service';
+import { GameInfoDto, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
@@ -63,6 +63,14 @@ export class GameComponent {
       this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
 
       this.gameService.auth();
+
+      if (x.should_reconnect) {
+        this.gameService.sendGameMessage({
+          type: "Reconnect",
+          data: null
+        });
+      }
+
       this.gameService.emitter.subscribe(x => {
         this.handleServerGameMessage(x);
       });
@@ -93,7 +101,7 @@ export class GameComponent {
     return this.gameState == GameState.NotPlaying
   }
 
-  handleServerGameMessage(message: ServerGameMessage) {
+  handleServerGameMessage(message: ServerMessage) {
     switch (message.type) {
       case 'PlayerTurn':
         return this.handlePlayerTurn(message.data);
@@ -117,7 +125,39 @@ export class GameComponent {
         return this.handleGameEnded(message.data);
       case 'PlayerJoined':
         return this.handlePlayerJoined(message.data);
+      case 'Reconnect':
+        return this.reconnect(message.data)
+      case 'Error':
+        return this.handleError(message.data)
     }
+  }
+
+  reconnect(data: GameInfoDto) {
+    const player = this.players.get(data.current_player)
+
+    if (!player) {
+      console.error('nao achou o player', this.players, data.current_player)
+      return
+    }
+
+    player.ready = true
+    this.cardsPlayer = data.deck
+
+    for (const [id, lifes] of Object.entries(data.lifes)) {
+      const player = this.players.get(id)
+
+      player!.lifes = lifes;
+    }
+
+    for (const [id, points] of Object.entries(data.points)) {
+      const player = this.players.get(id)
+
+      player!.setInfo!.points = points;
+    }
+  }
+
+  handleError(data: { msg: string; }) {
+    console.error("Error: ", data.msg)
   }
 
   handlePlayerJoined(data: Player) {

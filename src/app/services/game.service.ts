@@ -1,17 +1,15 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { deserializeServerMessage, ServerGameMessage } from './server.service';
+import { deserializeServerMessage, ServerMessage } from './server.service';
 import { Router } from '@angular/router';
 import { ClientGameMessage, ClientMessage } from './client.service';
 import { environment } from '../../environments/environment';
-import { AuthService } from './auth.service';
-import { Turn } from '../models/turn';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
   private socket: WebSocket | undefined;
-  emitter = new EventEmitter<ServerGameMessage>();
+  emitter = new EventEmitter<ServerMessage>();
 
   constructor(private router: Router) {
 
