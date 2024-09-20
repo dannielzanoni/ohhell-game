@@ -13,6 +13,11 @@ enum GameState {
   Dealing,
 }
 
+interface AudioInfo {
+  name: string;
+  path: string;
+}
+
 @Component({
   selector: 'app-room',
   templateUrl: './game.component.html',
@@ -30,6 +35,10 @@ export class GameComponent {
   GameState = GameState;
   setOrRoundEnded: boolean = false;
   collapsed: boolean = false;
+  volume: number = 40;
+  audios: AudioInfo[] = [];
+  selectedAudio: AudioInfo | null = null;
+  audioPlayer: HTMLAudioElement | null = null;
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -47,6 +56,14 @@ export class GameComponent {
 
   ngOnInit(): void {
     this.join();
+
+    this.audios = [
+      { name: 'Renato Cariani', path: '../assets/sounds/cariani.mp3' },
+      { name: 'Kanye West', path: '../assets/sounds/kanye.wav' },
+      { name: 'LUCAS1', path: '../assets/sounds/lucas1.mp3' },
+    ];
+
+    this.selectedAudio = this.audios[0];
   }
 
   join() {
@@ -267,10 +284,7 @@ export class GameComponent {
     const yourTurn = data.player_id == this.authService.getID();
 
     if (yourTurn) {
-      const audio = new Audio('../assets/sounds/suavez2.mp3');
-      audio.play().catch((error) => {
-        console.error('Error to play your turn audio:', error);
-      });
+      this.playAudio();
     }
 
     for (const [id, player] of this.players) {
@@ -391,6 +405,24 @@ export class GameComponent {
     }
 
     return null;
+  }
+
+  playAudio() {
+    if (this.selectedAudio) {
+      this.audioPlayer = new Audio(this.selectedAudio.path);
+      if (this.audioPlayer) {
+        this.audioPlayer.volume = this.volume / 100;
+        this.audioPlayer.play().catch((error: any) => {
+          console.error('Error to play audio:', error);
+        });
+      }
+    }
+  }
+
+  onVolumeChange() {
+    if (this.audioPlayer) {
+      this.audioPlayer.volume = this.volume / 100;
+    }
   }
 
 }

@@ -82,7 +82,13 @@
         <h4>Round Number: {{ this.totalCardsInRound}}</h4>
         <h4>Order: 4 → 5, 6, 7, 10, 11(Q), 12(K), 1, 2, 3</h4>
       </p-tabPanel>
-      <p-tabPanel header="Sounds"></p-tabPanel>
+      <p-tabPanel header="Sounds">
+        <h4>Volume:</h4>
+        <p-slider [(ngModel)]="volume" styleClass="w-5rem" (ngModelChange)="onVolumeChange()" />
+        <br>
+        <h4>Your Turn Notification Audio:</h4>
+        <p-dropdown [options]="audios" [(ngModel)]="selectedAudio" optionLabel="name" placeholder="Select a Audio" />
+      </p-tabPanel>
       <p-tabPanel header="View"></p-tabPanel>
     </p-tabView>
   </div>
