@@ -1,4 +1,4 @@
 export const environment = {
-    api_url: 'http://localhost:3000',
-    websocket_url: 'ws://localhost:3000/game'
+    api_url: 'https://oh-hell.fly.dev',
+    websocket_url: 'wss://oh-hell.fly.dev/game'
 };
