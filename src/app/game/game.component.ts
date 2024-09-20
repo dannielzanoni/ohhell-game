@@ -62,14 +62,7 @@ export class GameComponent {
     this.lobbyService.joinLobby(roomId).subscribe(x => {
       this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
 
-      this.gameService.auth();
-
-      if (x.should_reconnect) {
-        this.gameService.sendGameMessage({
-          type: "Reconnect",
-          data: null
-        });
-      }
+      this.gameService.auth(x.should_reconnect);
 
       this.gameService.emitter.subscribe(x => {
         this.handleServerGameMessage(x);

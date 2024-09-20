@@ -15,8 +15,8 @@ export class GameService {
 
   }
 
-  auth() {
-    const token = localStorage.getItem('JWT_TOKEN') ?? '';
+  auth(should_reconnect: boolean) {
+    const token = localStorage.getItem('JWT_TOKEN');
 
     if (!token) {
       this.router.navigate(['/']);
@@ -26,6 +26,13 @@ export class GameService {
 
     this.socket.onopen = () => {
       this.sendClientMessage({ type: 'Auth', data: { token } });
+
+      if (should_reconnect) {
+        this.sendGameMessage({
+          type: "Reconnect",
+          data: null
+        });
+      }
     };
 
     this.handleSocket();
