@@ -1,7 +1,14 @@
 import { Player, PlayerPoints } from "../models/player";
 import { Card, Turn } from "../models/turn";
 
-export type ServerGameMessage =
+export type GameInfoDto = {
+  lifes: PlayerPoints,
+  points: PlayerPoints,
+  deck: Card[],
+  current_player: string
+}
+
+export type ServerMessage =
   | { type: 'PlayerTurn'; data: { player_id: string } }
   | { type: 'TurnPlayed'; data: { pile: Turn[] } }
   | { type: 'PlayerBidded'; data: { player_id: string, bid: number } }
@@ -13,9 +20,11 @@ export type ServerGameMessage =
   | { type: 'SetEnded'; data: PlayerPoints }
   | { type: 'GameEnded'; data: { winner: string, lifes: PlayerPoints } }
   | { type: 'PlayerJoined'; data: Player; }
+  | { type: 'Reconnect'; data: GameInfoDto; }
+  | { type: 'Error'; data: { msg: string }; }
 
-export function deserializeServerMessage(json: string): ServerGameMessage {
+export function deserializeServerMessage(json: string): ServerMessage {
   const parsed = JSON.parse(json);
 
-  return parsed as ServerGameMessage;
+  return parsed as ServerMessage;
 }

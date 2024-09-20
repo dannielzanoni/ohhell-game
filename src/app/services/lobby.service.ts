@@ -12,6 +12,7 @@ export interface ViewLobbyDTO {
 export interface JoinLobbyDTO {
   id: string;
   players: PlayerReadyDTO[];
+  should_reconnect: boolean
 }
 
 export interface PlayerReadyDTO {
