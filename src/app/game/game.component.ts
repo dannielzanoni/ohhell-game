@@ -300,6 +300,11 @@ export class GameComponent {
       currentCenterCard.classList.remove('move-to-center');
     }
     cardElement.classList.add('move-to-center');
+
+    const audio = new Audio('../assets/sounds/card_animation.mp3');
+    audio.play().catch((error) => {
+      console.error('Error to play card animation sound:', error);
+    });
   }
 
   handleCardClick(event: MouseEvent, card: Card) {
