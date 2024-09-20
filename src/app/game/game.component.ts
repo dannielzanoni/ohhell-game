@@ -264,10 +264,14 @@ export class GameComponent {
     this.setOrRoundEnded = false;
     this.gameState = GameState.Dealing;
 
-    const audio = new Audio('../assets/sounds/suavez2.mp3');
-    audio.play().catch((error) => {
-      console.error('Error to play your turn audio:', error);
-    });
+    const yourTurn = data.player_id == this.authService.getID();
+
+    if (yourTurn) {
+      const audio = new Audio('../assets/sounds/suavez2.mp3');
+      audio.play().catch((error) => {
+        console.error('Error to play your turn audio:', error);
+      });
+    }
 
     for (const [id, player] of this.players) {
       player.turnToPlay = data.player_id == id
