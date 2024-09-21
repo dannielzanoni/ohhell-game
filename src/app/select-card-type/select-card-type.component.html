@@ -1,0 +1,15 @@
+<div class="player-preview">
+    <p-floatLabel style="margin-bottom: 20px;">
+        <h2>Select Type of Deck</h2>
+        <div class="deck-option" (click)="selectDeck('spain')">
+            <h4>Spanish Deck:</h4>
+            <img src="../../assets/cards/3paus.jpg" alt="" class="deck-image"
+                [class.selected]="selectedDeck === 'spain'">
+        </div>
+        <div class="deck-option" (click)="selectDeck('french')">
+            <h4>French Deck:</h4>
+            <img src="../../assets/cards/french/3_of_clubs.png" alt="" class="deck-image" style="border-radius: 5px;"
+                [class.selected]="selectedDeck === 'french'">
+        </div>
+    </p-floatLabel>
+</div>

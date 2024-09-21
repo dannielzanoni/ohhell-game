@@ -1,0 +1,36 @@
+.player-preview {
+  color: white;
+  background-color: rgba(7, 7, 7, 0.884);
+  padding: 30px 20px;
+  border-radius: 8px;
+  text-align: center;
+  display: inline-block;
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: -20rem;
+  height: 22rem;
+}
+
+.deck-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  height: 7rem;
+}
+
+.deck-image {
+  width: 70px;
+  border-radius: 8px;
+  margin-left: 10px;
+  transition: border 0.05s ease;
+  box-sizing: border-box;
+}
+
+.deck-image.selected {
+  border: 3px solid purple;
+  box-sizing: border-box;
+}

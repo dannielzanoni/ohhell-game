@@ -17,6 +17,7 @@ import { PlayerFormsComponent } from './player-forms/player-forms.component';
 import { TabViewModule } from 'primeng/tabview';
 import { SliderModule } from 'primeng/slider';
 import { DropdownModule } from 'primeng/dropdown';
+import { SelectCardTypeComponent } from './select-card-type/select-card-type.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { DropdownModule } from 'primeng/dropdown';
     GameComponent,
     ViewGamesComponent,
     HowToPlayComponent,
-    PlayerFormsComponent
+    PlayerFormsComponent,
+    SelectCardTypeComponent
   ],
   imports: [
     BrowserModule,
