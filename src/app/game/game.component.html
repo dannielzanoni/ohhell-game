@@ -8,13 +8,14 @@
             }" [ngClass]="{ 'turn-to-play': playerInfo.turnToPlay || playerInfo.ready && notReady() }"></div>
           <div class="data-player" [class.ready]="playerInfo.ready">
             <div class="prediction-circle">{{ playerInfo.setInfo?.bid}}</div>
-            {{ playerInfo.data.data.name }}
+            <h4 class="player-nick"> {{ playerInfo.data.data.name }}</h4>
+
             <div class="hearts">
               <img *ngFor="let heart of getHearts(playerInfo.lifes)" class="heart" src="../../assets/heart3.png"
                 alt="Heart" />
             </div>
             <div class="cards-back-player">
-              <img *ngFor="let card of getPoints(playerInfo)" class="heart" src="../assets/cards/back_card.jpg">
+              <img *ngFor="let card of getPoints(playerInfo)" class="mini-cards" src="../assets/cards/back_card.jpg">
             </div>
           </div>
         </div>
@@ -89,7 +90,9 @@
         <h4>Your Turn Notification Audio:</h4>
         <p-dropdown [options]="audios" [(ngModel)]="selectedAudio" optionLabel="name" placeholder="Select a Audio" />
       </p-tabPanel>
-      <p-tabPanel header="View"></p-tabPanel>
+      <p-tabPanel header="Cards">
+        <h4>Coming soon...</h4>
+      </p-tabPanel>
     </p-tabView>
   </div>
 

@@ -51,9 +51,47 @@ body {
   border-radius: 10px;
 }
 
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  background-color: black;
+  background-size: 115%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 2px solid gray;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  transform: translateY(-70%);
+  margin-bottom: 0.3rem;
+}
+
+.prediction-circle {
+  width: 2.3rem;
+  height: 2.3rem;
+  background-color: black;
+  border: 2px solid gray;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  position: fixed;
+  top: 50%;
+  left: 7.5rem;
+  transform: translateY(-50%);
+}
+
+.player-nick {
+  margin-bottom: 3px;
+}
+
 .player-square {
-  width: 8rem;
-  height: 1rem;
+  width: 10rem;
+  height: 2rem;
   background-color: black;
   border: 2px solid gray;
   display: flex;
@@ -62,9 +100,13 @@ body {
   justify-content: center;
   color: white;
   font-size: 15px;
-  position: absolute;
+  position: fixed;
   border-radius: 20rem;
-  padding-top: 0.9rem;
+}
+
+.cards-back-player {
+  position: fixed;
+  margin-top: 0.3rem;
 }
 
 .player-1 {
@@ -139,12 +181,14 @@ body {
 }
 
 .data-player {
-  margin-top: 5px;
+  position: fixed;
+  margin-bottom: 0.9rem;
+  margin-right: 2rem;
+  margin-top: 0.6rem;
 }
 
 .hearts {
   display: flex;
-  margin-top: 5px;
 }
 
 .heart {
@@ -152,38 +196,9 @@ body {
   margin-right: 2px;
 }
 
-.prediction-circle {
-  width: 2rem;
-  height: 2rem;
-  background-color: black;
-  border: 2px solid gray;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 18px;
-  position: absolute;
-  top: 50%;
-  left: 7rem;
-  transform: translateY(-50%);
-}
-
-.profile-pic {
-  width: 100px;
-  height: 100px;
-  background-color: black;
-  background-size: 115%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 2px solid gray;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  transform: translateY(-70%);
-  margin-bottom: 10px;
+.mini-cards {
+  height: 1.7rem;
+  margin-right: 2px;
 }
 
 .ready-container {
@@ -245,7 +260,7 @@ body {
 
 .card img {
   border-radius: 10px;
-  width: 7rem;
+  width: 8rem;
   transition: transform 0.1s ease-in-out, width 0.2s ease-in-out;
 }
 
