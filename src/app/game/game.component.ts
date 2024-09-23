@@ -32,7 +32,6 @@ export class GameComponent {
   upcard: Card | null = null;
   possible_bids: number[] | null = null;
   gameState = GameState.NotPlaying;
-  GameState = GameState;
   setOrRoundEnded: boolean = false;
   collapsed: boolean = false;
   volume: number = 40;
@@ -148,6 +147,8 @@ export class GameComponent {
   }
 
   reconnect(data: GameInfoDto) {
+    this.gameState = GameState.Dealing
+
     const player = this.players.get(data.current_player)
 
     if (!player) {
