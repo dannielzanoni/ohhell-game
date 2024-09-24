@@ -87,8 +87,11 @@
         <h4>Volume:</h4>
         <p-slider [(ngModel)]="volume" styleClass="w-5rem" (ngModelChange)="onVolumeChange()" />
         <br>
-        <h4>Your Turn Notification Audio:</h4>
+        <h4>Your Turn to play:</h4>
         <p-dropdown [options]="audios" [(ngModel)]="selectedAudio" optionLabel="name" placeholder="Select a Audio" />
+        <h4>Your Turn to Bid:</h4>
+        <p-dropdown [options]="audiosBid" [(ngModel)]="selectedAudioBid" optionLabel="name"
+          placeholder="Select a Audio" />
       </p-tabPanel>
       <p-tabPanel header="Cards">
         <h4>Coming soon...</h4>

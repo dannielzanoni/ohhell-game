@@ -38,7 +38,9 @@ export class GameComponent {
   volume: number = 40;
   audios: AudioInfo[] = [];
   selectedAudio: AudioInfo | null = null;
+  selectedAudioBid: AudioInfo | null = null;
   audioPlayer: HTMLAudioElement | null = null;
+  audiosBid: AudioInfo[] = [];
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -58,12 +60,18 @@ export class GameComponent {
     this.join();
 
     this.audios = [
+      { name: 'Default', path: '../assets/sounds/default.mp3' },
       { name: 'Renato Cariani', path: '../assets/sounds/cariani.mp3' },
       { name: 'Kanye West', path: '../assets/sounds/kanye.wav' },
       { name: 'LUCAS1', path: '../assets/sounds/lucas1.mp3' },
     ];
 
+    this.audiosBid = [
+      { name: 'Default', path: '../assets/sounds/bid.mp3' }
+    ]
+
     this.selectedAudio = this.audios[0];
+    this.selectedAudioBid = this.audiosBid[0];
   }
 
   join() {
@@ -260,6 +268,7 @@ export class GameComponent {
     }
 
     if (yourTurn) {
+      this.playAudio(false);
       this.gameState = GameState.Bidding;
     }
   }
@@ -284,7 +293,7 @@ export class GameComponent {
     const yourTurn = data.player_id == this.authService.getID();
 
     if (yourTurn) {
-      this.playAudio();
+      this.playAudio(true);
     }
 
     for (const [id, player] of this.players) {
@@ -407,15 +416,22 @@ export class GameComponent {
     return null;
   }
 
-  playAudio() {
-    if (this.selectedAudio) {
-      this.audioPlayer = new Audio(this.selectedAudio.path);
-      if (this.audioPlayer) {
-        this.audioPlayer.volume = this.volume / 100;
-        this.audioPlayer.play().catch((error: any) => {
-          console.error('Error to play audio:', error);
-        });
-      }
+  playAudio(isPlayerTurn: boolean) {
+    if (isPlayerTurn && this.selectedAudio?.path) {
+      this.playAudioPlayer(this.selectedAudio?.path);
+    }
+    else {
+      this.playAudioPlayer(this.selectedAudioBid?.path!)
+    }
+  }
+
+  private playAudioPlayer(path: string) {
+    this.audioPlayer = new Audio(path);
+    if (this.audioPlayer) {
+      this.audioPlayer.volume = this.volume / 100;
+      this.audioPlayer.play().catch((error: any) => {
+        console.error('Error to play audio:', error);
+      });
     }
   }
 

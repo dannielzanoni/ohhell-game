@@ -44,13 +44,12 @@ export class PlayerFormsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 4; i++) {
       this.profilePictures.push(`../../assets/profile_pictures/gifs/${i}.gif`);
     }
     for (let i = 1; i <= 31; i++) {
       this.profilePictures.push(`../../assets/profile_pictures/${i}.png`);
     }
-    // pode da problema devido ao retorno da picture
   }
 
   selectPictureHandler(picture: string) {
