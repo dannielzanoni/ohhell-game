@@ -55,8 +55,7 @@
 
   <div class="cards-container" #cardsContainer>
     <div class="card" *ngFor="let card of cardsPlayer">
-      <img [src]="getCardImage(card)" [class.disabled]="gameState !== GameState.Dealing"
-        (click)="handleCardClick($event, card)" />
+      <img [src]="getCardImage(card)" [class.disabled]="!playing()" (click)="handleCardClick($event, card)" />
     </div>
   </div>
 

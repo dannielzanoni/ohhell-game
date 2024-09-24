@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 enum GameState {
   NotPlaying,
   Bidding,
-  Dealing,
+  Playing,
 }
 
 interface AudioInfo {
@@ -32,7 +32,6 @@ export class GameComponent {
   upcard: Card | null = null;
   possible_bids: number[] | null = null;
   gameState = GameState.NotPlaying;
-  GameState = GameState;
   setOrRoundEnded: boolean = false;
   collapsed: boolean = false;
   volume: number = 40;
@@ -113,7 +112,7 @@ export class GameComponent {
   }
 
   playing() {
-    return this.gameState == GameState.Dealing
+    return this.gameState == GameState.Playing
   }
 
   bidding() {
@@ -156,6 +155,8 @@ export class GameComponent {
   }
 
   reconnect(data: GameInfoDto) {
+    this.gameState = GameState.Playing
+
     const player = this.players.get(data.current_player)
 
     if (!player) {
@@ -262,6 +263,7 @@ export class GameComponent {
     this.setOrRoundEnded = false;
     const yourTurn = data.player_id == this.authService.getID();
     this.possible_bids = yourTurn ? data.possible_bids : null
+    this.gameState = GameState.Playing
 
     for (const [id, player] of this.players) {
       player.turnToPlay = data.player_id == id
@@ -288,7 +290,7 @@ export class GameComponent {
 
   handlePlayerTurn(data: { player_id: string; }) {
     this.setOrRoundEnded = false;
-    this.gameState = GameState.Dealing;
+    this.gameState = GameState.Playing;
 
     const yourTurn = data.player_id == this.authService.getID();
 
