@@ -405,3 +405,152 @@ body {
 .pile {
   z-index: var(--index);
 }
+
+@media (max-width: 768px) {
+  .container::before {
+    transform: rotate(90deg) translateY(57vw);
+    transform-origin: center center;
+    width: 100vh;
+  }
+
+  .data-player {
+    position: fixed;
+    margin-bottom: 0.9rem;
+    margin-right: 2rem;
+    margin-top: 0.6rem;
+  }
+
+  .cards-back-player {
+    margin-top: 0.3rem;
+  }
+
+  .joker-container {
+    position: relative;
+    margin-right: -12rem;
+    margin-bottom: 30rem;
+  }
+
+  .joker img {
+    width: 6rem;
+    height: auto;
+  }
+
+  .deck-container {
+    position: fixed;
+    margin-bottom: 30rem;
+    margin-right: -3rem;
+  }
+
+  .pile-container {
+    position: fixed;
+    margin-right: 12rem;
+  }
+
+  .card-back img {
+    height: 9rem;
+    width: 5.5rem;
+  }
+
+  .hearts {
+    display: flex;
+  }
+
+  .heart {
+    height: 0.8rem;
+    margin-right: 2px;
+  }
+
+  .table {
+    width: 40rem;
+    height: 25rem;
+  }
+
+  .profile-pic {
+    width: 60px;
+    height: 60px;
+    transform: translateY(-50%);
+    margin-bottom: 50px;
+  }
+
+  .player-nick {
+    margin-bottom: 3px;
+  }
+
+  .player-square {
+    width: 7rem;
+    height: 1.5rem;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 15px;
+    position: fixed;
+    border-radius: 20rem;
+  }
+
+  .card img {
+    width: 6rem;
+  }
+  .ready-count {
+    font-size: 1rem;
+  }
+
+  .bid-container {
+    margin-top: 10rem;
+  }
+
+  .player-1 {
+    top: -45%;
+    left: 50%;
+  }
+  .player-2 {
+    top: -20%;
+    left: 72%;
+  }
+  .player-3 {
+    top: 10%;
+    left: 74%;
+  }
+  .player-4 {
+    top: 45%;
+    left: 74%;
+  }
+  .player-5 {
+    top: 80%;
+    left: 74%;
+  }
+  .player-6 {
+    top: 100%;
+    left: 50%;
+  }
+  .player-7 {
+    top: 80%;
+    left: 26%;
+  }
+  .player-8 {
+    top: 45%;
+    left: 26%;
+  }
+  .player-9 {
+    top: 10%;
+    left: 26%;
+  }
+  .player-0 {
+    top: -20%;
+    left: 26%;
+  }
+
+  .cards-container {
+    bottom: 5px;
+    width: 100%;
+  }
+
+  .prediction-circle {
+    width: 1.5rem;
+    height: 1.5rem;
+    left: 5.5rem;
+    font-size: 14px;
+  }
+}

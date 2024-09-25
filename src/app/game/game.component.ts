@@ -33,7 +33,7 @@ export class GameComponent {
   possible_bids: number[] | null = null;
   gameState = GameState.NotPlaying;
   setOrRoundEnded: boolean = false;
-  collapsed: boolean = false;
+  collapsed: boolean = true;
   volume: number = 40;
   audios: AudioInfo[] = [];
   selectedAudio: AudioInfo | null = null;
