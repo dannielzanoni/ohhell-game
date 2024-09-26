@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
-import { GameInfoDto, GameStage, ServerMessage } from '../services/server.service';
+import { GameInfoDto, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Rank, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
@@ -164,8 +164,6 @@ export class GameComponent {
         break
     }
 
-    console.log("This: ", this)
-
     this.cardsPlayer = gameInfo.deck
     this.upcard = gameInfo.upcard
 
@@ -173,7 +171,7 @@ export class GameComponent {
       const player = this.players.get(info.id)
 
       if (!player) {
-        console.error("Player not found: ", info.id)
+        console.error("Missing player on reconnect: ", gameInfo)
         continue;
       }
 
@@ -184,7 +182,7 @@ export class GameComponent {
   }
 
   handleError(data: { msg: string; }) {
-    console.error("Error: ", data.msg)
+    console.error("GameError: ", data.msg)
   }
 
   handlePlayerJoined(data: Player) {
@@ -202,7 +200,7 @@ export class GameComponent {
     const player = this.players.get(data.player_id)
 
     if (!player) {
-      console.error('nao achou o player', this.players, data.player_id)
+      console.error('Missing player on handlePlayerStatusChange: ', data)
       return
     }
 
@@ -217,11 +215,12 @@ export class GameComponent {
     for (const [id, lifes] of Object.entries(data)) {
       const player = this.players.get(id);
 
-      if (lifes == 0) {
-        this.players.delete(id);
-      } else {
-        player!.lifes = lifes;
+      if (!player) {
+        console.error('Missing player on updateLifes: ', data)
+        continue
       }
+
+      player.lifes = lifes;
     }
   }
 
@@ -258,7 +257,12 @@ export class GameComponent {
       for (const [id, points] of Object.entries(data)) {
         const player = this.players.get(id)
 
-        player!.setInfo!.points = points;
+        if (!player) {
+          console.error('Missing player on handleRoundEnded: ', data)
+          return
+        }
+
+        player.setInfo!.points = points;
       }
 
       this.pile = []
@@ -334,7 +338,7 @@ export class GameComponent {
   }
 
   getMapEntries() {
-    return Array.from(this.players.values());
+    return Array.from(this.players.values()).filter(p => p.lifes > 0);
   }
 
   markAsReady() {
@@ -353,7 +357,6 @@ export class GameComponent {
   adjustCardSize() {
     const cards = this.cardsContainer.nativeElement.querySelectorAll('.card img');
     const numberOfCards = cards.length;
-    console.log(numberOfCards);
 
     let newSize = '7.7rem';
 

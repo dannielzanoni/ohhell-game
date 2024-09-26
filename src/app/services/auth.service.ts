@@ -42,7 +42,6 @@ export class AuthService {
     //todo trocar quando implementar login google!!
     const jwt = jwtDecode<AnonymousPlayer>(token);
     this.claims = jwt;
-    console.log("JWT DECODE: ", jwt);
 
     return jwt;
   }
