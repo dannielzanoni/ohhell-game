@@ -24,7 +24,7 @@ export type ServerMessage =
   | { type: 'RoundEnded'; data: PlayerPoints }
   | { type: 'PlayerDeck'; data: Card[] }
   | { type: 'SetStart'; data: { upcard: Card } }
-  | { type: 'SetEnded'; data: PlayerPoints }
+  | { type: 'SetEnded'; data: { lifes: PlayerPoints } }
   | { type: 'GameEnded'; data: { winner: string, lifes: PlayerPoints } }
   | { type: 'PlayerJoined'; data: Player; }
   | { type: 'Reconnect'; data: GameInfoDto; }

@@ -182,7 +182,11 @@ export class GameComponent {
   }
 
   handlePlayerJoined(data: Player) {
-    this.players.set(getPlayerId(data), getPlayerInfo(data));
+    const player = this.players.get(data.data.name);
+
+    if (!player) {
+      this.players.set(getPlayerId(data), getPlayerInfo(data))
+    }
   }
 
   handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
@@ -205,12 +209,16 @@ export class GameComponent {
       const player = this.players.get(id);
 
       player!.lifes = lifes;
+
+      if (lifes == 0) {
+        this.players.delete(id);
+      }
     }
   }
 
-  handleSetEnded(data: PlayerPoints) {
+  handleSetEnded(data: { lifes: PlayerPoints }) {
     setTimeout(() => {
-      this.updateLifes(data)
+      this.updateLifes(data.lifes)
 
       this.pile = []
     }, 3000);
