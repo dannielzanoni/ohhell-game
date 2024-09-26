@@ -53,7 +53,11 @@ export class GameComponent {
     private gameService: GameService,
     private lobbyService: LobbyService,
     private authService: AuthService
-  ) { }
+  ) {
+    this.gameService.emitter.subscribe(x => {
+      this.handleServerGameMessage(x);
+    });
+  }
 
   ngOnInit(): void {
     this.join();
@@ -92,10 +96,6 @@ export class GameComponent {
       this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
 
       this.gameService.auth(x.should_reconnect);
-
-      this.gameService.emitter.subscribe(x => {
-        this.handleServerGameMessage(x);
-      });
     });
   }
 
@@ -157,23 +157,20 @@ export class GameComponent {
   reconnect(data: GameInfoDto) {
     this.gameState = GameState.Playing
 
-    const player = this.players.get(data.current_player)
-
-    if (!player) {
-      console.error('nao achou o player', this.players, data.current_player)
-      return
-    }
-
-    player.turnToPlay = true
-
     this.cardsPlayer = data.deck
     this.upcard = data.upcard
 
     for (const info of data.info) {
       const player = this.players.get(info.id)
 
-      player!.lifes = info.lifes
-      player!.setInfo! = { points: info.rounds, bid: info.bid }
+      if (!player) {
+        console.error("Player not found: ", info.id)
+        continue;
+      }
+
+      player.turnToPlay = info.id == data.current_player
+      player.lifes = info.lifes
+      player.setInfo = { points: info.rounds, bid: info.bid }
     }
   }
 
@@ -185,6 +182,7 @@ export class GameComponent {
     const player = this.players.get(data.data.name);
 
     if (!player) {
+      console.log("PlayerState: ", this.players)
       this.players.set(getPlayerId(data), getPlayerInfo(data))
     }
   }
