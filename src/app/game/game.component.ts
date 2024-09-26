@@ -159,7 +159,8 @@ export class GameComponent {
       case "Dealing": this.gameState = GameState.Playing; break
       case "Bidding":
         this.gameState = GameState.Bidding;
-        this.possible_bids = gameInfo.stage.data.possible_bids
+        const yourTurn = gameInfo.current_player == this.authService.getID();
+        this.possible_bids = yourTurn ? gameInfo.stage.data.possible_bids : null
         break
     }
 
