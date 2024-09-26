@@ -4,6 +4,7 @@ import { Card, Turn } from "../models/turn";
 export type GameInfoDto = {
   info: PlayerInfoDto[],
   deck: Card[],
+  upcard: Card,
   current_player: string
 }
 
