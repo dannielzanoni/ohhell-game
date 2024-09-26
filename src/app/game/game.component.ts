@@ -208,10 +208,10 @@ export class GameComponent {
     for (const [id, lifes] of Object.entries(data)) {
       const player = this.players.get(id);
 
-      player!.lifes = lifes;
-
       if (lifes == 0) {
         this.players.delete(id);
+      } else {
+        player!.lifes = lifes;
       }
     }
   }
