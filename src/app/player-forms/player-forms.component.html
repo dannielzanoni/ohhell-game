@@ -1,5 +1,5 @@
 <div class="player-preview">
-    <p-floatLabel style="margin-bottom: 20px;">
+    <p-floatLabel style="margin-bottom: 20px; margin-top: 20px; color: white;">
         <input id="username" type="text" pInputText [(ngModel)]="userName" />
         <label for="username">Username</label>
         <p-button [ngStyle]="{ 'margin-left': '10px' }" [raised]="true" severity="secondary" (click)="savePlayer()"
@@ -7,7 +7,6 @@
                 <img src="../../assets/save.png" alt="Save Icon" style="width: 20px; height: 20px;" />
             </ng-template>
         </p-button>
-
     </p-floatLabel>
     <div class="profile-pictures">
         <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"

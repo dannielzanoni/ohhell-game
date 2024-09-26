@@ -48,8 +48,10 @@
 
 @media (max-width: 768px) {
   .player-preview {
+    margin-top: 20px;
     max-width: 300px;
   }
+
   .profile-pictures {
     max-width: 300px;
   }
