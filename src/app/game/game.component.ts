@@ -160,6 +160,8 @@ export class GameComponent {
       case "Bidding": this.gameState = GameState.Bidding; break
     }
 
+    console.log("This: ", this)
+
     this.cardsPlayer = data.deck
     this.upcard = data.upcard
 
