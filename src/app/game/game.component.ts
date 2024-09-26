@@ -186,8 +186,9 @@ export class GameComponent {
     const player = this.players.get(id);
 
     if (!player) {
-      console.log("PlayerState: ", this.players)
       this.players.set(id, getPlayerInfo(data))
+    } else {
+      player.data = data
     }
   }
 
