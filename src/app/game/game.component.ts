@@ -154,18 +154,21 @@ export class GameComponent {
     }
   }
 
-  reconnect(data: GameInfoDto) {
-    switch (data.stage) {
+  reconnect(gameInfo: GameInfoDto) {
+    switch (gameInfo.stage.type) {
       case "Dealing": this.gameState = GameState.Playing; break
-      case "Bidding": this.gameState = GameState.Bidding; break
+      case "Bidding":
+        this.gameState = GameState.Bidding;
+        this.possible_bids = gameInfo.stage.data.possible_bids
+        break
     }
 
     console.log("This: ", this)
 
-    this.cardsPlayer = data.deck
-    this.upcard = data.upcard
+    this.cardsPlayer = gameInfo.deck
+    this.upcard = gameInfo.upcard
 
-    for (const info of data.info) {
+    for (const info of gameInfo.info) {
       const player = this.players.get(info.id)
 
       if (!player) {
@@ -173,7 +176,7 @@ export class GameComponent {
         continue;
       }
 
-      player.turnToPlay = info.id == data.current_player
+      player.turnToPlay = info.id == gameInfo.current_player
       player.lifes = info.lifes
       player.setInfo = { points: info.rounds, bid: info.bid }
     }

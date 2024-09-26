@@ -9,7 +9,9 @@ export type GameInfoDto = {
   stage: GameStage
 }
 
-export type GameStage = "Dealing" | "Bidding"
+export type GameStage =
+  | { type: 'Dealing'; data: null }
+  | { type: 'Bidding'; data: { possible_bids: number[] } }
 
 export type PlayerInfoDto = {
   id: string,
