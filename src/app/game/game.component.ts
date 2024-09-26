@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
-import { GameInfoDto, ServerMessage } from '../services/server.service';
+import { GameInfoDto, GameStage, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Rank, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
@@ -155,7 +155,10 @@ export class GameComponent {
   }
 
   reconnect(data: GameInfoDto) {
-    this.gameState = GameState.Playing
+    switch (data.stage) {
+      case GameStage.Dealing: this.gameState = GameState.Playing; break
+      case GameStage.Bidding: this.gameState = GameState.Bidding; break
+    }
 
     this.cardsPlayer = data.deck
     this.upcard = data.upcard

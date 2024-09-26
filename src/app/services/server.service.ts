@@ -6,6 +6,12 @@ export type GameInfoDto = {
   deck: Card[],
   upcard: Card,
   current_player: string
+  stage: GameStage
+}
+
+export enum GameStage {
+  Dealing = "Dealing",
+  Bidding = "Bidding",
 }
 
 export type PlayerInfoDto = {
