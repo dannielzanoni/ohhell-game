@@ -182,11 +182,12 @@ export class GameComponent {
   }
 
   handlePlayerJoined(data: Player) {
-    const player = this.players.get(data.data.name);
+    const id = getPlayerId(data);
+    const player = this.players.get(id);
 
     if (!player) {
       console.log("PlayerState: ", this.players)
-      this.players.set(getPlayerId(data), getPlayerInfo(data))
+      this.players.set(id, getPlayerInfo(data))
     }
   }
 
