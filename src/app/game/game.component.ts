@@ -156,8 +156,8 @@ export class GameComponent {
 
   reconnect(data: GameInfoDto) {
     switch (data.stage) {
-      case GameStage.Dealing: this.gameState = GameState.Playing; break
-      case GameStage.Bidding: this.gameState = GameState.Bidding; break
+      case "Dealing": this.gameState = GameState.Playing; break
+      case "Bidding": this.gameState = GameState.Bidding; break
     }
 
     this.cardsPlayer = data.deck

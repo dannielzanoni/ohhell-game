@@ -9,10 +9,7 @@ export type GameInfoDto = {
   stage: GameStage
 }
 
-export enum GameStage {
-  Dealing = "Dealing",
-  Bidding = "Bidding",
-}
+export type GameStage = "Dealing" | "Bidding"
 
 export type PlayerInfoDto = {
   id: string,
