@@ -53,7 +53,11 @@ export class GameComponent {
     private gameService: GameService,
     private lobbyService: LobbyService,
     private authService: AuthService
-  ) { }
+  ) {
+    this.gameService.emitter.subscribe(x => {
+      this.handleServerGameMessage(x);
+    });
+  }
 
   ngOnInit(): void {
     this.join();
@@ -92,10 +96,6 @@ export class GameComponent {
       this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
 
       this.gameService.auth(x.should_reconnect);
-
-      this.gameService.emitter.subscribe(x => {
-        this.handleServerGameMessage(x);
-      });
     });
   }
 
@@ -154,38 +154,45 @@ export class GameComponent {
     }
   }
 
-  reconnect(data: GameInfoDto) {
-    this.gameState = GameState.Playing
-
-    const player = this.players.get(data.current_player)
-
-    if (!player) {
-      console.error('nao achou o player', this.players, data.current_player)
-      return
+  reconnect(gameInfo: GameInfoDto) {
+    switch (gameInfo.stage.type) {
+      case "Dealing": this.gameState = GameState.Playing; break
+      case "Bidding":
+        this.gameState = GameState.Bidding;
+        const yourTurn = gameInfo.current_player == this.authService.getID();
+        this.possible_bids = yourTurn ? gameInfo.stage.data.possible_bids : null
+        break
     }
 
-    player.turnToPlay = true
+    this.cardsPlayer = gameInfo.deck
+    this.upcard = gameInfo.upcard
 
-    this.cardsPlayer = data.deck
-    this.upcard = data.upcard
-
-    for (const info of data.info) {
+    for (const info of gameInfo.info) {
       const player = this.players.get(info.id)
 
-      player!.lifes = info.lifes
-      player!.setInfo! = { points: info.rounds, bid: info.bid }
+      if (!player) {
+        console.error("Missing player on reconnect: ", gameInfo)
+        continue;
+      }
+
+      player.turnToPlay = info.id == gameInfo.current_player
+      player.lifes = info.lifes
+      player.setInfo = { points: info.rounds, bid: info.bid }
     }
   }
 
   handleError(data: { msg: string; }) {
-    console.error("Error: ", data.msg)
+    console.error("GameError: ", data.msg)
   }
 
   handlePlayerJoined(data: Player) {
-    const player = this.players.get(data.data.name);
+    const id = getPlayerId(data);
+    const player = this.players.get(id);
 
     if (!player) {
-      this.players.set(getPlayerId(data), getPlayerInfo(data))
+      this.players.set(id, getPlayerInfo(data))
+    } else {
+      player.data = data
     }
   }
 
@@ -193,7 +200,7 @@ export class GameComponent {
     const player = this.players.get(data.player_id)
 
     if (!player) {
-      console.error('nao achou o player', this.players, data.player_id)
+      console.error('Missing player on handlePlayerStatusChange: ', data)
       return
     }
 
@@ -208,11 +215,12 @@ export class GameComponent {
     for (const [id, lifes] of Object.entries(data)) {
       const player = this.players.get(id);
 
-      player!.lifes = lifes;
-
-      if (lifes == 0) {
-        this.players.delete(id);
+      if (!player) {
+        console.error('Missing player on updateLifes: ', data)
+        continue
       }
+
+      player.lifes = lifes;
     }
   }
 
@@ -249,7 +257,12 @@ export class GameComponent {
       for (const [id, points] of Object.entries(data)) {
         const player = this.players.get(id)
 
-        player!.setInfo!.points = points;
+        if (!player) {
+          console.error('Missing player on handleRoundEnded: ', data)
+          return
+        }
+
+        player.setInfo!.points = points;
       }
 
       this.pile = []
@@ -325,7 +338,7 @@ export class GameComponent {
   }
 
   getMapEntries() {
-    return Array.from(this.players.values());
+    return Array.from(this.players.values()).filter(p => p.lifes > 0);
   }
 
   markAsReady() {
@@ -344,7 +357,6 @@ export class GameComponent {
   adjustCardSize() {
     const cards = this.cardsContainer.nativeElement.querySelectorAll('.card img');
     const numberOfCards = cards.length;
-    console.log(numberOfCards);
 
     let newSize = '7.7rem';
 

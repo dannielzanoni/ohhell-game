@@ -6,7 +6,12 @@ export type GameInfoDto = {
   deck: Card[],
   upcard: Card,
   current_player: string
+  stage: GameStage
 }
+
+export type GameStage =
+  | { type: 'Dealing'; data: null }
+  | { type: 'Bidding'; data: { possible_bids: number[] } }
 
 export type PlayerInfoDto = {
   id: string,
