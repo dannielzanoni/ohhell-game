@@ -374,15 +374,6 @@ export class GameComponent {
     });
   }
 
-  playCard(card: Card) {
-    const me = this.players.get(this.authService.getID()!)
-
-    if (me?.turnToPlay) {
-      this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
-      this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } });
-    }
-  }
-
   moveToCenter(event: Event) {
     const cardElement = event.target as HTMLElement;
     const currentCenterCard = this.cardsContainer.nativeElement.querySelector('.move-to-center');
@@ -404,11 +395,10 @@ export class GameComponent {
       return;
     }
 
+    me.turnToPlay = false;
     this.moveToCenter(event);
-
-    if (!this.bidding()) {
-      this.playCard(card);
-    }
+    this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
+    this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } });
   }
 
   getJokerValue(): Rank | null {
