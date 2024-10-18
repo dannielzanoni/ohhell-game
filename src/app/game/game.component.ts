@@ -6,6 +6,8 @@ import { GameInfoDto, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Rank, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
+import { from, of } from 'rxjs';
+import { concatMap, delay } from 'rxjs/operators';
 
 enum GameState {
   NotPlaying,
@@ -32,7 +34,6 @@ export class GameComponent {
   upcard: Card | null = null;
   possible_bids: number[] | null = null;
   gameState = GameState.NotPlaying;
-  setOrRoundEnded: boolean = false;
   collapsed: boolean = true;
   volume: number = 40;
   audios: AudioInfo[] = [];
@@ -54,7 +55,18 @@ export class GameComponent {
     private lobbyService: LobbyService,
     private authService: AuthService
   ) {
-    this.gameService.emitter.subscribe(x => {
+    this.gameService.emitter.pipe(
+      concatMap(event => {
+        switch (event.type) {
+          case 'RoundEnded':
+          case 'SetEnded':
+          case 'GameEnded':
+            return of(event).pipe(delay(3000))
+          default:
+            return of(event)
+        }
+      })
+    ).subscribe(x => {
       this.handleServerGameMessage(x);
     });
   }
@@ -225,16 +237,12 @@ export class GameComponent {
   }
 
   handleSetEnded(data: { lifes: PlayerPoints }) {
-    setTimeout(() => {
-      this.updateLifes(data.lifes)
+    this.updateLifes(data.lifes)
 
-      this.pile = []
-    }, 3000);
-    this.setOrRoundEnded = true;
+    this.pile = []
   }
 
   handleSetStart(data: { upcard: Card }) {
-    this.setOrRoundEnded = false;
     this.upcard = data.upcard;
 
     for (const player of this.players.values()) {
@@ -253,21 +261,18 @@ export class GameComponent {
   }
 
   handleRoundEnded(data: PlayerPoints) {
-    setTimeout(() => {
-      for (const [id, points] of Object.entries(data)) {
-        const player = this.players.get(id)
+    for (const [id, points] of Object.entries(data)) {
+      const player = this.players.get(id)
 
-        if (!player) {
-          console.error('Missing player on handleRoundEnded: ', data)
-          return
-        }
-
-        player.setInfo!.points = points;
+      if (!player) {
+        console.error('Missing player on handleRoundEnded: ', data)
+        return
       }
 
-      this.pile = []
-    }, 3000);
-    this.setOrRoundEnded = true;
+      player.setInfo!.points = points;
+    }
+
+    this.pile = []
   }
 
   handlePlayerBidded(data: { player_id: string; bid: number; }) {
@@ -283,7 +288,6 @@ export class GameComponent {
   }
 
   handlePlayerBiddingTurn(data: { player_id: string; possible_bids: number[] }) {
-    this.setOrRoundEnded = false;
     const yourTurn = data.player_id == this.authService.getID();
     this.possible_bids = yourTurn ? data.possible_bids : null
     this.gameState = GameState.Playing
@@ -312,7 +316,6 @@ export class GameComponent {
   }
 
   handlePlayerTurn(data: { player_id: string; }) {
-    this.setOrRoundEnded = false;
     this.gameState = GameState.Playing;
 
     const yourTurn = data.player_id == this.authService.getID();
@@ -376,9 +379,7 @@ export class GameComponent {
 
     if (me?.turnToPlay) {
       this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
-      setTimeout(() => {
-        this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } });
-      }, 200);
+      this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } });
     }
   }
 
@@ -405,11 +406,9 @@ export class GameComponent {
 
     this.moveToCenter(event);
 
-    setTimeout(() => {
-      if (!this.bidding()) {
-        this.playCard(card);
-      }
-    }, 500);
+    if (!this.bidding()) {
+      this.playCard(card);
+    }
   }
 
   getJokerValue(): Rank | null {

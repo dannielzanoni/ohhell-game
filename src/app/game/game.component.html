@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <div class="bid-container" *ngIf="bidding() && !this.setOrRoundEnded">
+  <div class="bid-container" *ngIf="bidding()">
     <p-button class="bid-button" *ngFor="let bid of possible_bids" [label]="bid.toString()" [raised]="true"
       severity="secondary" [disabled]="" (click)="sendBid(bid)"></p-button>
   </div>
