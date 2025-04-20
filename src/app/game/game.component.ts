@@ -6,7 +6,7 @@ import { GameInfoDto, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Rank, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
-import { from, of } from 'rxjs';
+import { of } from 'rxjs';
 import { concatMap, delay } from 'rxjs/operators';
 
 enum GameState {
@@ -219,7 +219,7 @@ export class GameComponent {
     player.ready = data.ready;
   }
 
-  handleGameEnded(data: { winner: string, lifes: PlayerPoints }) {
+  handleGameEnded(data: { lifes: PlayerPoints }) {
     this.updateLifes(data.lifes);
   }
 

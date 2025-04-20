@@ -30,7 +30,7 @@ export type ServerMessage =
   | { type: 'PlayerDeck'; data: Card[] }
   | { type: 'SetStart'; data: { upcard: Card } }
   | { type: 'SetEnded'; data: { lifes: PlayerPoints } }
-  | { type: 'GameEnded'; data: { winner: string, lifes: PlayerPoints } }
+  | { type: 'GameEnded'; data: { lifes: PlayerPoints } }
   | { type: 'PlayerJoined'; data: Player; }
   | { type: 'Reconnect'; data: GameInfoDto; }
   | { type: 'Error'; data: { msg: string }; }
