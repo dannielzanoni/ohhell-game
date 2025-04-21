@@ -10,12 +10,12 @@ export type GooglePlayer = {
   email: string;
   picture: string;
   name: string;
+  data: { [key: string]: null }
 }
 
 export type AnonymousPlayer = {
-  picture: string;
-  name: string;
   id: string;
+  data: { [key: string]: string }
 }
 
 export type PlayerInfo = {

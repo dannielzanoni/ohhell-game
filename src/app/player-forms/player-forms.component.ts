@@ -1,6 +1,5 @@
-import { Component, Input, input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { firstValueFrom } from 'rxjs';
 import { AnonymousPlayer } from '../models/player';
 
 
@@ -19,7 +18,7 @@ export class PlayerFormsComponent implements OnInit {
 
   constructor(private authService: AuthService) {
     this.claims = authService.getClaims();
-    this.userName = this.claims?.name || null;
+    this.userName = authService.getUserName();
   }
 
   async savePlayer() {
@@ -57,6 +56,6 @@ export class PlayerFormsComponent implements OnInit {
   }
 
   buttonDisabled() {
-    return this.userName == this.claims?.name && this.selectedPicture == this.claims?.picture
+    return this.userName == this.authService.getUserName() && this.selectedPicture == this.claims?.data["picture"]
   }
 }

@@ -2,8 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
-import { Token } from '@angular/compiler';
-import { AnonymousPlayer, Player } from '../models/player';
+import { AnonymousPlayer } from '../models/player';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
@@ -43,7 +42,7 @@ export class AuthService {
     const jwt = jwtDecode<AnonymousPlayer>(token);
     this.claims = jwt;
 
-    return jwt;
+    return jwt as AnonymousPlayer;
   }
 
   isUserAuthenticated() {
@@ -51,7 +50,7 @@ export class AuthService {
   }
 
   getUserName() {
-    return this.getClaims()?.name || null;
+    return this.getClaims()?.data["nickname"] || null;
   }
 
   getID() {
