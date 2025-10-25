@@ -13,7 +13,7 @@ export class AuthService {
   constructor(private client: HttpClient) { }
 
   private httpLogin(name: string, picture: string) {
-    const url = `${environment.api_url}/auth/login`
+    const url = `${environment.api_url}/auth/signup`
     const payload = { picture, nickname: name }
 
     return this.client.post<{ token: string }>(url, payload)
