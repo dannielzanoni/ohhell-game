@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { deserializeServerMessage, ServerMessage } from './server.service';
 import { Router } from '@angular/router';
-import { ClientGameMessage, ClientMessage } from './client.service';
+import { ClientMessage } from './client.service';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -22,13 +22,11 @@ export class GameService {
       this.router.navigate(['/']);
       return;
     }
-    this.socket = new WebSocket(environment.websocket_url);
+    this.socket = new WebSocket(`${environment.websocket_url}/?token=${token}`);
 
     this.socket.onopen = () => {
-      this.sendClientMessage({ type: 'Auth', data: { token } });
-
       if (should_reconnect) {
-        this.sendGameMessage({
+        this.sendMessage({
           type: "Reconnect",
           data: null
         });
@@ -59,7 +57,7 @@ export class GameService {
     }
   }
 
-  private sendClientMessage(message: ClientMessage) {
+  public sendMessage(message: ClientMessage) {
     if (this.socket) {
       console.log('client: ', message);
       const json = JSON.stringify(message);
@@ -67,9 +65,5 @@ export class GameService {
     } else {
       console.error('WebSocket is not initialized');
     }
-  }
-
-  sendGameMessage(message: ClientGameMessage) {
-    this.sendClientMessage({ type: "Game", data: message })
   }
 }

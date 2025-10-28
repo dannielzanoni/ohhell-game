@@ -303,7 +303,7 @@ export class GameComponent {
   }
 
   sendBid(bid: number) {
-    this.gameService.sendGameMessage({ type: "PutBid", data: { bid } })
+    this.gameService.sendMessage({ type: "PutBid", data: { bid } })
   }
 
   bidTurn() {
@@ -346,7 +346,7 @@ export class GameComponent {
 
   markAsReady() {
     this.ready = !this.ready;
-    this.gameService.sendGameMessage({ type: "PlayerStatusChange", data: { ready: this.ready } })
+    this.gameService.sendMessage({ type: "PlayerStatusChange", data: { ready: this.ready } })
   }
 
   playersToStart() {
@@ -398,7 +398,7 @@ export class GameComponent {
     me.turnToPlay = false;
     this.moveToCenter(event);
     this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
-    this.gameService.sendGameMessage({ type: "PlayTurn", data: { card } });
+    this.gameService.sendMessage({ type: "PlayTurn", data: { card } });
   }
 
   getJokerValue(): Rank | null {
