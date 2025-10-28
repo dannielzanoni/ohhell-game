@@ -22,7 +22,7 @@ export class GameService {
       this.router.navigate(['/']);
       return;
     }
-    this.socket = new WebSocket(`${environment.websocket_url}/?token=${token}`);
+    this.socket = new WebSocket(`${environment.websocket_url}?token=${token}`);
 
     this.socket.onopen = () => {
       if (should_reconnect) {
