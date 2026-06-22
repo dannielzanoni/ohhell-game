@@ -3,12 +3,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 2rem 1rem;
   background-image: url("../../assets/back.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
+  gap: 1.5rem;
 }
 
 .home-container > .title {
@@ -31,6 +33,7 @@
 @media (min-width: 768px) {
   .home-container {
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .home-container > .options,
@@ -101,4 +104,60 @@
 
 .create-options p-dropdown {
   width: 100%;
+}
+
+.stats-panel {
+  width: min(320px, calc(100vw - 2rem));
+  padding: 1rem;
+  color: white;
+  background: linear-gradient(145deg, rgba(7, 7, 7, 0.76), rgba(117, 23, 23, 0.68));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+}
+
+.stats-panel .eyebrow {
+  margin: 0 0 0.25rem;
+  color: #ffca8a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.stats-panel h2 {
+  margin: 0 0 1rem;
+  font-size: 1.8rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.stats-grid div {
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.stats-grid strong,
+.stats-grid span {
+  display: block;
+}
+
+.stats-grid strong {
+  font-size: 1.25rem;
+}
+
+.stats-grid span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.8rem;
+}
+
+.stats-detail {
+  margin: 0.35rem 0;
+  color: rgba(255, 255, 255, 0.86);
 }

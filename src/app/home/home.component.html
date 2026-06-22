@@ -9,6 +9,7 @@
     <p-button label="Create Game" [raised]="true" severity="danger" (click)="createGame()"
       [disabled]="!isAuthenticated()" />
     <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewGames()" [disabled]="!isAuthenticated()" />
+    <p-button label="Leaderboard" [raised]="true" severity="danger" (click)="openLeaderboard()" />
     <p-button label="How to Play" [raised]="true" severity="danger" (click)="openHowToPlay()" />
     <p-button severity="contrast" (click)="openLink()">
       <ng-template pTemplate="content">
@@ -17,5 +18,37 @@
       </ng-template>
     </p-button>
   </div>
-  <app-player-forms></app-player-forms>
+  <app-player-forms [saveCallback]="refreshPlayerStats.bind(this)"></app-player-forms>
+  <section class="stats-panel" *ngIf="isAuthenticated()">
+    <ng-container *ngIf="playerStats$ | async as stats; else emptyStats">
+      <p class="eyebrow">Your stats</p>
+      <h2>{{ stats.matches_won }} wins</h2>
+      <div class="stats-grid">
+        <div>
+          <strong>{{ stats.games_played }}</strong>
+          <span>games</span>
+        </div>
+        <div>
+          <strong>{{ stats.win_rate | number:'1.0-1' }}%</strong>
+          <span>win rate</span>
+        </div>
+        <div>
+          <strong>{{ stats.rounds_won }}</strong>
+          <span>rounds won</span>
+        </div>
+        <div>
+          <strong>{{ stats.bid_accuracy | number:'1.0-1' }}%</strong>
+          <span>bid hit</span>
+        </div>
+      </div>
+      <p class="stats-detail">Average bid: {{ stats.average_bid | number:'1.0-2' }}</p>
+      <p class="stats-detail">Trump cards dealt: {{ stats.trump_cards }}</p>
+      <p class="stats-detail">Favorite winner: {{ cardLabel(stats.favorite_card) }}</p>
+    </ng-container>
+    <ng-template #emptyStats>
+      <p class="eyebrow">Your stats</p>
+      <h2>No completed games yet</h2>
+      <p class="stats-detail">Finish a match to appear in the leaderboard.</p>
+    </ng-template>
+  </section>
 </div>

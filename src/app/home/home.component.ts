@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
 import { AuthService } from '../services/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { PlayerStats, StatsService } from '../services/stats.service';
+import { Card } from '../models/turn';
 
 @Component({
   selector: 'app-home',
@@ -16,9 +18,10 @@ export class HomeComponent {
   profilePictures: string[] = [];
   lifesOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(value => ({ label: `${value} lives`, value }));
   selectedLifes = 5;
+  playerStats$: Observable<PlayerStats | null> | null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
-    this.userName = authService.getUserName();
+  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService, private statsService: StatsService) {
+    this.refreshPlayerStats();
   }
 
   async createGame() {
@@ -36,12 +39,25 @@ export class HomeComponent {
     this.router.navigate(['/viewgames']);
   }
 
+  openLeaderboard() {
+    this.router.navigate(['/leaderboard']);
+  }
+
   openLink() {
     window.open('https://github.com/dannielzanoni/ohhell-game', '_blank');
   }
 
   isAuthenticated() {
     return this.authService.isUserAuthenticated()
+  }
+
+  refreshPlayerStats() {
+    this.userName = this.authService.getUserName();
+    this.playerStats$ = this.isAuthenticated() ? this.statsService.getMyStats() : null;
+  }
+
+  cardLabel(card: Card | null) {
+    return card ? `${card.rank} of ${card.suit}` : 'No winning card yet';
   }
 
 }

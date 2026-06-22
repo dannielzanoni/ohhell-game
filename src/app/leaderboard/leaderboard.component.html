@@ -1,0 +1,46 @@
+<div class="leaderboard-page">
+  <button class="btn-main-menu" (click)="goToMainMenu()">Main menu</button>
+
+  <section class="leaderboard-card">
+    <div class="leaderboard-header">
+      <p>Global statistics</p>
+      <h1>Leaderboard</h1>
+    </div>
+
+    <div class="table-container">
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Player</th>
+            <th>Games</th>
+            <th>Wins</th>
+            <th>Win rate</th>
+            <th>Rounds</th>
+            <th>Bid hit</th>
+            <th>Avg bid</th>
+            <th>Trump cards</th>
+            <th>Favorite card</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stats of leaderboard$ | async; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td class="player-cell">
+              <img *ngIf="playerPicture(stats.player)" [src]="playerPicture(stats.player)" alt="Player picture" />
+              <span>{{ playerName(stats.player, stats.player_id) }}</span>
+            </td>
+            <td>{{ stats.games_played }}</td>
+            <td>{{ stats.matches_won }}</td>
+            <td>{{ stats.win_rate | number:'1.0-1' }}%</td>
+            <td>{{ stats.rounds_won }}</td>
+            <td>{{ stats.bid_accuracy | number:'1.0-1' }}%</td>
+            <td>{{ stats.average_bid | number:'1.0-2' }}</td>
+            <td>{{ stats.trump_cards }}</td>
+            <td>{{ cardLabel(stats.favorite_card) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

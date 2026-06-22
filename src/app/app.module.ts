@@ -18,6 +18,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { SliderModule } from 'primeng/slider';
 import { DropdownModule } from 'primeng/dropdown';
 import { SelectCardTypeComponent } from './select-card-type/select-card-type.component';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { SelectCardTypeComponent } from './select-card-type/select-card-type.com
     ViewGamesComponent,
     HowToPlayComponent,
     PlayerFormsComponent,
-    SelectCardTypeComponent
+    SelectCardTypeComponent,
+    LeaderboardComponent
   ],
   imports: [
     BrowserModule,

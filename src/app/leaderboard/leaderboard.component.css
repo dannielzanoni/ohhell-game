@@ -1,0 +1,110 @@
+.leaderboard-page {
+  min-height: 100vh;
+  padding: 5rem 1.5rem 2rem;
+  background-image: url("../../assets/back.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+.btn-main-menu {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background-color: rgba(7, 7, 7, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-main-menu:hover {
+  background-color: rgba(40, 40, 40, 0.9);
+  transform: translateY(-1px);
+}
+
+.leaderboard-card {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(7, 7, 7, 0.86), rgba(80, 12, 12, 0.72));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.leaderboard-header {
+  margin-bottom: 1rem;
+}
+
+.leaderboard-header p {
+  margin: 0 0 0.25rem;
+  color: #ffca8a;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.leaderboard-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.styled-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.styled-table th {
+  color: #ffca8a;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.styled-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+}
+
+.player-cell img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 768px) {
+  .leaderboard-page {
+    padding: 4.5rem 0.75rem 1rem;
+  }
+
+  .leaderboard-card {
+    padding: 1rem;
+  }
+}
