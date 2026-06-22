@@ -83,3 +83,22 @@
   width: 200px;
   margin-top: 10px;
 }
+
+.create-options {
+  width: 200px;
+  margin-top: 10px;
+  padding: 10px;
+  color: white;
+  background-color: rgba(7, 7, 7, 0.5);
+  border-radius: 8px;
+}
+
+.create-options label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.create-options p-dropdown {
+  width: 100%;
+}

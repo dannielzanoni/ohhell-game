@@ -33,6 +33,8 @@ type GameEndSummary = {
   styleUrls: ['./game.component.css']
 })
 export class GameComponent {
+  private readonly eventDelayStorageKey = 'GAME_EVENT_DELAY_MS';
+  readonly maxEventDelayMs = 3000;
   players: Map<string, PlayerInfo> = new Map;
   ready: boolean = false;
   totalCardsInRound: number = 0;
@@ -49,6 +51,7 @@ export class GameComponent {
   audioPlayer: HTMLAudioElement | null = null;
   audiosBid: AudioInfo[] = [];
   gameEndSummary: GameEndSummary | null = null;
+  eventDelayMs = this.loadEventDelayMs();
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -69,7 +72,7 @@ export class GameComponent {
           case 'RoundEnded':
           case 'SetEnded':
           case 'GameEnded':
-            return of(event).pipe(delay(3000))
+            return of(event).pipe(delay(this.eventDelayMs))
           default:
             return of(event)
         }
@@ -577,6 +580,31 @@ export class GameComponent {
     if (this.audioPlayer) {
       this.audioPlayer.volume = this.volume / 100;
     }
+  }
+
+  onEventDelayChange(value: number | undefined) {
+    this.eventDelayMs = this.clampEventDelay(value ?? this.maxEventDelayMs);
+    localStorage.setItem(this.eventDelayStorageKey, this.eventDelayMs.toString());
+  }
+
+  private loadEventDelayMs() {
+    const storedValue = localStorage.getItem(this.eventDelayStorageKey);
+
+    if (storedValue == null) {
+      return this.maxEventDelayMs;
+    }
+
+    const stored = Number(storedValue);
+
+    if (Number.isNaN(stored)) {
+      return this.maxEventDelayMs;
+    }
+
+    return this.clampEventDelay(stored);
+  }
+
+  private clampEventDelay(value: number) {
+    return Math.max(0, Math.min(this.maxEventDelayMs, Math.round(value)));
   }
 
 }

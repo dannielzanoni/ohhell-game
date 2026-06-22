@@ -21,6 +21,10 @@ type CreateGame = {
   lobby_id: string;
 }
 
+export type CreateGameOptions = {
+  lifes: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,14 +52,14 @@ export class LobbyService {
       .pipe(map(normalizeLobbyInfo))
   }
 
-  createGame() {
+  createGame(options: CreateGameOptions) {
     const token = localStorage.getItem('JWT_TOKEN');
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    return this.client.post<CreateGame>(`${environment.api_url}/lobby`, {}, { headers })
+    return this.client.post<CreateGame>(`${environment.api_url}/lobby`, options, { headers })
   }
 }
 

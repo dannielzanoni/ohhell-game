@@ -109,6 +109,10 @@
         <h4>Volume:</h4>
         <p-slider [(ngModel)]="volume" styleClass="w-5rem" (ngModelChange)="onVolumeChange()" />
         <br>
+        <h4>Delay between plays: {{ eventDelayMs / 1000 | number:'1.0-2' }}s</h4>
+        <p-slider [(ngModel)]="eventDelayMs" [min]="0" [max]="maxEventDelayMs" [step]="250" styleClass="w-5rem"
+          (ngModelChange)="onEventDelayChange($event)" />
+        <br>
         <h4>Your Turn to play:</h4>
         <p-dropdown [options]="audios" [(ngModel)]="selectedAudio" optionLabel="name" placeholder="Select a Audio" />
         <h4>Your Turn to Bid:</h4>

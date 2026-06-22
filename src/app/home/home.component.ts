@@ -14,6 +14,8 @@ export class HomeComponent {
   userName: string | null = null;
   selectedPicture: string = '';
   profilePictures: string[] = [];
+  lifesOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(value => ({ label: `${value} lives`, value }));
+  selectedLifes = 5;
 
   constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService, private lobbyService: LobbyService, private authService: AuthService) {
     this.userName = authService.getUserName();
@@ -22,7 +24,7 @@ export class HomeComponent {
   async createGame() {
     //todo validar se o cara selecionou foto
 
-    const lobby = await firstValueFrom(this.lobbyService.createGame());
+    const lobby = await firstValueFrom(this.lobbyService.createGame({ lifes: this.selectedLifes }));
     this.router.navigate(['/game', lobby.lobby_id]);
   }
 

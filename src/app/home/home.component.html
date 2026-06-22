@@ -1,6 +1,11 @@
 <div class="home-container">
   <div class="options">
     <h1 class="title">Oh-Hell Game</h1>
+    <div class="create-options">
+      <label for="lifes">Lives</label>
+      <p-dropdown inputId="lifes" [options]="lifesOptions" [(ngModel)]="selectedLifes" optionLabel="label"
+        optionValue="value" />
+    </div>
     <p-button label="Create Game" [raised]="true" severity="danger" (click)="createGame()"
       [disabled]="!isAuthenticated()" />
     <p-button label="Rooms" [raised]="true" severity="danger" (click)="viewGames()" [disabled]="!isAuthenticated()" />
