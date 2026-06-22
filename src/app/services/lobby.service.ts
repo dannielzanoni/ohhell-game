@@ -1,39 +1,31 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 import { Injectable } from "@angular/core";
-import { Player } from '../models/player';
-import { Router } from "@angular/router";
+import { GameInfoDto, PlayerStatusMap } from './server.service';
+import { map } from 'rxjs';
 
 export interface ViewLobbyDTO {
   id: string;
   player_count: number;
 }
 
-export interface JoinLobbyDTO {
-  id: string;
-  players: PlayerReadyDTO[];
-  should_reconnect: boolean
-}
+export type LobbyInfo =
+  | { type: 'NotStarted'; data: PlayerStatusMap }
+  | { type: 'Playing'; data: GameInfoDto };
 
-export interface PlayerReadyDTO {
-  player: Player;
-  ready: boolean;
-}
+type LobbyInfoResponse = LobbyInfo
+  | { NotStarted: PlayerStatusMap }
+  | { Playing: GameInfoDto };
 
 type CreateGame = {
   lobby_id: string;
-}
-
-type GetLobbyDto = {
-  id: string;
-  player_count: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class LobbyService {
-  constructor(private client: HttpClient, private router: Router) { }
+  constructor(private client: HttpClient) { }
 
   getLobbies() {
     const token = localStorage.getItem('JWT_TOKEN');
@@ -52,7 +44,8 @@ export class LobbyService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.client.put<JoinLobbyDTO>(`${environment.api_url}/lobby/${id}`, {}, { headers })
+    return this.client.put<LobbyInfoResponse>(`${environment.api_url}/lobby/${id}`, {}, { headers })
+      .pipe(map(normalizeLobbyInfo))
   }
 
   createGame() {
@@ -64,4 +57,16 @@ export class LobbyService {
 
     return this.client.post<CreateGame>(`${environment.api_url}/lobby`, {}, { headers })
   }
+}
+
+function normalizeLobbyInfo(response: LobbyInfoResponse): LobbyInfo {
+  if ('type' in response) {
+    return response;
+  }
+
+  if ('NotStarted' in response) {
+    return { type: 'NotStarted', data: response.NotStarted };
+  }
+
+  return { type: 'Playing', data: response.Playing };
 }

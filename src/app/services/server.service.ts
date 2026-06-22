@@ -3,22 +3,33 @@ import { Card, Turn } from "../models/turn";
 
 export type GameInfoDto = {
   info: PlayerInfoDto[],
-  deck: Card[],
-  upcard: Card,
+  deck: Card[] | null,
+  upcard: Card | null,
   current_player: string
   stage: GameStage
 }
 
 export type GameStage =
-  | { type: 'Dealing'; data: null }
+  | { type: 'Dealing' }
   | { type: 'Bidding'; data: { possible_bids: number[] } }
 
 export type PlayerInfoDto = {
   id: string,
   lifes: number,
-  bid: number,
-  rounds: number
+  bid: number | null,
+  rounds: number | null
 }
+
+export type PlayerStatusDto = {
+  player: Player;
+  ready: boolean;
+}
+
+export type PlayerStatusMap = Record<string, PlayerStatusDto>;
+
+export type MatchSnapshot =
+  | { type: 'Waiting'; data: PlayerStatusMap }
+  | { type: 'Playing'; data: { players: PlayerStatusMap; game: GameInfoDto } }
 
 export type ServerMessage =
   | { type: 'PlayerTurn'; data: { player_id: string } }
@@ -32,7 +43,7 @@ export type ServerMessage =
   | { type: 'SetEnded'; data: { lifes: PlayerPoints } }
   | { type: 'GameEnded'; data: { lifes: PlayerPoints } }
   | { type: 'PlayerJoined'; data: Player; }
-  | { type: 'Reconnect'; data: GameInfoDto; }
+  | { type: 'Snapshot'; data: MatchSnapshot; }
   | { type: 'Error'; data: { msg: string }; }
 
 export function deserializeServerMessage(json: string): ServerMessage {

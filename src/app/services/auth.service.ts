@@ -21,11 +21,12 @@ export class AuthService {
 
   async login(userName: string, picture: string) {
     if (localStorage.getItem("JWT_TOKEN")) {
+      this.getClaims();
       return
     }
 
     const loginData = await firstValueFrom(this.httpLogin(userName, picture));
-    localStorage.setItem('JWT_TOKEN', loginData.token);
+    this.setToken(loginData.token);
   }
 
   getClaims() {
@@ -60,7 +61,12 @@ export class AuthService {
   async updateProfile(nickname: string, picture: string) {
     const response = await firstValueFrom(this.updateProfileHttp(nickname, picture))
 
-    localStorage.setItem("JWT_TOKEN", response.token);
+    this.setToken(response.token);
+  }
+
+  private setToken(token: string) {
+    localStorage.setItem("JWT_TOKEN", token);
+    this.claims = jwtDecode<AnonymousPlayer>(token);
   }
 
   private updateProfileHttp(nickname: string, picture: string) {
