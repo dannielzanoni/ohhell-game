@@ -18,4 +18,8 @@ export class ViewGamesComponent {
   joinLobby(lobby: ViewLobbyDTO) {
     this.router.navigate(['/game', lobby.id])
   }
+
+  goToMainMenu() {
+    this.router.navigate(['/'])
+  }
 }

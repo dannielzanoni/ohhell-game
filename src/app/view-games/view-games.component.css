@@ -36,6 +36,26 @@ body {
   overflow: auto;
 }
 
+.btn-main-menu {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background-color: rgba(7, 7, 7, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-main-menu:hover {
+  background-color: rgba(40, 40, 40, 0.9);
+  transform: translateY(-1px);
+}
+
 .styled-table {
   width: 100%;
   border-collapse: collapse;
