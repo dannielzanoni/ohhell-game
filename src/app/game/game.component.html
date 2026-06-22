@@ -4,11 +4,11 @@
       <div class="table">
         <div *ngFor="let playerInfo of getMapEntries(); let i = index" class="player-square player-{{ i }}">
           <div class="profile-pic" [ngStyle]="{
-              'background-image': 'url(' + playerInfo.data.data.data['picture'] + ')'
+              'background-image': 'url(' + getPlayerPicture(playerInfo) + ')'
             }" [ngClass]="{ 'turn-to-play': playerInfo.turnToPlay || playerInfo.ready && notReady() }"></div>
           <div class="data-player" [class.ready]="playerInfo.ready">
             <div class="prediction-circle">{{ playerInfo.setInfo?.bid}}</div>
-            <h4 class="player-nick"> {{ playerInfo.data.data.data["nickname"] }}</h4>
+            <h4 class="player-nick"> {{ getPlayerNickname(playerInfo) }}</h4>
 
             <div class="hearts">
               <img *ngFor="let heart of getHearts(playerInfo.lifes)" class="heart" src="../../assets/heart3.png"
@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  <div class="pile-container" #cardsContainer>
+  <div class="pile-container" #pileContainer>
     <div class="pile" *ngFor="let turn of pile; let i = index"
       [ngStyle]="{'--index': pile.length - i, 'left.px': i * 20, 'transform': 'rotate(' + (i * 5) + 'deg)'}">
       <img [src]="getCardImage(turn.card)" />
@@ -55,13 +55,36 @@
 
   <div class="cards-container" #cardsContainer>
     <div class="card" *ngFor="let card of cardsPlayer">
-      <img [src]="getCardImage(card)" [class.disabled]="!playing()" (click)="handleCardClick($event, card)" />
+      <img [src]="getCardImage(card)" [class.disabled]="!canPlayCards()" (click)="handleCardClick($event, card)" />
     </div>
   </div>
 
-  <div class="bid-container" *ngIf="bidding()">
+  <div class="bid-container" *ngIf="bidTurn()">
     <p-button class="bid-button" *ngFor="let bid of possible_bids" [label]="bid.toString()" [raised]="true"
       severity="secondary" [disabled]="" (click)="sendBid(bid)"></p-button>
+  </div>
+
+  <div class="game-ended-overlay" *ngIf="gameEndSummary">
+    <div class="game-ended-card" [class.no-winners]="gameEndSummary.noWinners">
+      <div class="game-ended-kicker">Game ended</div>
+
+      <ng-container *ngIf="!gameEndSummary.noWinners; else noWinners">
+        <h1>{{ gameEndSummary.winners.length > 1 ? 'Winners' : 'Winner' }}</h1>
+        <div class="winner-showcase">
+          <div class="winner-avatar" *ngFor="let winner of gameEndSummary.winners" [ngStyle]="{
+              'background-image': 'url(' + getPlayerPicture(winner) + ')'
+            }"></div>
+        </div>
+        <h2>{{ gameEndSummary.winnerNames }}</h2>
+        <p>Last player standing.</p>
+      </ng-container>
+
+      <ng-template #noWinners>
+        <h1>No winners</h1>
+        <div class="no-winners-mark">0</div>
+        <p>Everyone ran out of lives.</p>
+      </ng-template>
+    </div>
   </div>
 
   <div class="info">

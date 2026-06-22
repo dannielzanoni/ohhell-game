@@ -282,6 +282,15 @@ body {
   transform: scale(1.1);
 }
 
+.card img.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.card img.disabled:hover {
+  transform: none;
+}
+
 .card img.move-to-center {
   position: absolute;
   top: 50%;
@@ -404,6 +413,188 @@ body {
 
 .pile {
   z-index: var(--index);
+}
+
+.game-ended-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: radial-gradient(circle at center, rgba(255, 232, 150, 0.24), rgba(0, 0, 0, 0.82) 62%);
+  animation: game-ended-fade-in 0.45s ease-out both;
+}
+
+.game-ended-card {
+  position: relative;
+  width: min(35rem, 92vw);
+  padding: 2rem;
+  color: #fff7da;
+  text-align: center;
+  border: 2px solid rgba(255, 214, 99, 0.8);
+  border-radius: 1.5rem;
+  background: linear-gradient(145deg, rgba(31, 20, 8, 0.96), rgba(95, 42, 9, 0.94));
+  box-shadow: 0 0 45px rgba(255, 188, 54, 0.38), inset 0 0 35px rgba(255, 225, 135, 0.08);
+  overflow: hidden;
+  animation: winner-card-pop 0.7s cubic-bezier(0.18, 0.9, 0.2, 1.2) both;
+}
+
+.game-ended-card::before,
+.game-ended-card::after {
+  content: '';
+  position: absolute;
+  top: -35%;
+  width: 8rem;
+  height: 170%;
+  background: linear-gradient(180deg, transparent, rgba(255, 224, 132, 0.55), transparent);
+  transform: rotate(22deg);
+  animation: winner-shine 1.8s ease-in-out infinite;
+}
+
+.game-ended-card::before {
+  left: -5rem;
+}
+
+.game-ended-card::after {
+  right: -7rem;
+  animation-delay: 0.55s;
+}
+
+.game-ended-card.no-winners {
+  border-color: rgba(200, 200, 200, 0.55);
+  background: linear-gradient(145deg, rgba(20, 20, 24, 0.96), rgba(58, 58, 68, 0.94));
+  box-shadow: 0 0 35px rgba(220, 220, 220, 0.22), inset 0 0 35px rgba(255, 255, 255, 0.05);
+}
+
+.game-ended-kicker {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.5rem;
+  color: #ffd76a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.24rem;
+  text-transform: uppercase;
+}
+
+.game-ended-card h1,
+.game-ended-card h2,
+.game-ended-card p {
+  position: relative;
+  z-index: 1;
+}
+
+.game-ended-card h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 8vw, 5.6rem);
+  line-height: 0.95;
+  text-shadow: 0 5px 18px rgba(0, 0, 0, 0.65);
+}
+
+.game-ended-card h2 {
+  margin: 1rem 0 0.35rem;
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
+}
+
+.game-ended-card p {
+  margin: 0;
+  color: rgba(255, 247, 218, 0.82);
+  font-size: 1rem;
+}
+
+.winner-showcase {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+}
+
+.winner-avatar {
+  width: 6rem;
+  height: 6rem;
+  border: 3px solid #ffd76a;
+  border-radius: 50%;
+  background-color: #111;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 0 0 rgba(255, 215, 106, 0.72);
+  animation: winner-pulse 1.45s ease-in-out infinite;
+}
+
+.no-winners-mark {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin: 1.25rem 0;
+  color: rgba(255, 255, 255, 0.85);
+  border: 3px solid rgba(255, 255, 255, 0.38);
+  border-radius: 50%;
+  font-size: 4rem;
+  font-weight: 800;
+  animation: no-winners-drift 2.4s ease-in-out infinite;
+}
+
+@keyframes game-ended-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes winner-card-pop {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes winner-shine {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(0) rotate(22deg);
+  }
+  45% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0;
+    transform: translateX(18rem) rotate(22deg);
+  }
+}
+
+@keyframes winner-pulse {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 215, 106, 0.6);
+  }
+  50% {
+    transform: translateY(-0.35rem) scale(1.04);
+    box-shadow: 0 0 0 0.75rem rgba(255, 215, 106, 0);
+  }
+}
+
+@keyframes no-winners-drift {
+  0%, 100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-0.4rem) rotate(2deg);
+  }
 }
 
 @media (max-width: 768px) {
@@ -552,5 +743,14 @@ body {
     height: 1.5rem;
     left: 5.5rem;
     font-size: 14px;
+  }
+
+  .game-ended-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .winner-avatar {
+    width: 4.8rem;
+    height: 4.8rem;
   }
 }

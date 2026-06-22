@@ -2,12 +2,13 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
-import { GameInfoDto, ServerMessage } from '../services/server.service';
+import { GameInfoDto, MatchSnapshot, PlayerStatusMap, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Rank, Turn } from '../models/turn';
-import { getPlayerId, getPlayerInfo, Player, PlayerInfo, PlayerPoints } from '../models/player';
+import { getPlayerId, getPlayerInfo, getPlayerNickname, getPlayerPicture, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
 import { of } from 'rxjs';
 import { concatMap, delay } from 'rxjs/operators';
+import { LobbyInfo } from '../services/lobby.service';
 
 enum GameState {
   NotPlaying,
@@ -19,6 +20,12 @@ interface AudioInfo {
   name: string;
   path: string;
 }
+
+type GameEndSummary = {
+  winners: PlayerInfo[];
+  winnerNames: string;
+  noWinners: boolean;
+};
 
 @Component({
   selector: 'app-room',
@@ -32,7 +39,7 @@ export class GameComponent {
   cardsPlayer: Card[] = [];
   pile: Turn[] = [];
   upcard: Card | null = null;
-  possible_bids: number[] | null = null;
+  possible_bids: number[] = [];
   gameState = GameState.NotPlaying;
   collapsed: boolean = true;
   volume: number = 40;
@@ -41,6 +48,7 @@ export class GameComponent {
   selectedAudioBid: AudioInfo | null = null;
   audioPlayer: HTMLAudioElement | null = null;
   audiosBid: AudioInfo[] = [];
+  gameEndSummary: GameEndSummary | null = null;
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -104,11 +112,88 @@ export class GameComponent {
   }
 
   joinLobby(roomId: string) {
-    this.lobbyService.joinLobby(roomId).subscribe(x => {
-      this.players = new Map(x.players.map(p => [getPlayerId(p.player), getPlayerInfo(p.player)]))
-
-      this.gameService.auth(x.should_reconnect);
+    this.lobbyService.joinLobby(roomId).subscribe({
+      next: lobby => {
+        this.applyLobbyInfo(lobby);
+        this.gameService.auth();
+      },
+      error: error => {
+        console.error('Could not join lobby: ', error);
+        this.router.navigate(['viewgames']);
+      }
     });
+  }
+
+  private applyLobbyInfo(lobby: LobbyInfo) {
+    switch (lobby.type) {
+      case 'NotStarted':
+        this.applyWaitingSnapshot(lobby.data);
+        return;
+      case 'Playing':
+        this.applyGameInfo(lobby.data);
+        return;
+    }
+  }
+
+  private applySnapshot(snapshot: MatchSnapshot) {
+    switch (snapshot.type) {
+      case 'Waiting':
+        this.applyWaitingSnapshot(snapshot.data);
+        return;
+      case 'Playing':
+        this.applyWaitingSnapshot(snapshot.data.players);
+        this.applyGameInfo(snapshot.data.game);
+        return;
+    }
+  }
+
+  private applyWaitingSnapshot(players: PlayerStatusMap) {
+    this.gameEndSummary = null;
+    this.players = new Map(Object.entries(players).map(([id, status]) => [id, getPlayerInfo(status.player, status.ready)]));
+    this.ready = this.players.get(this.authService.getID() || '')?.ready || false;
+    this.gameState = GameState.NotPlaying;
+    this.cardsPlayer = [];
+    this.pile = [];
+    this.upcard = null;
+    this.possible_bids = [];
+  }
+
+  private applyGameInfo(gameInfo: GameInfoDto) {
+    switch (gameInfo.stage.type) {
+      case "Dealing":
+        this.gameState = GameState.Playing;
+        this.possible_bids = [];
+        break;
+      case "Bidding": {
+        this.gameState = GameState.Bidding;
+        const yourTurn = gameInfo.current_player == this.authService.getID();
+        this.possible_bids = yourTurn ? gameInfo.stage.data.possible_bids : [];
+        break;
+      }
+    }
+
+    this.gameEndSummary = null;
+
+    this.cardsPlayer = gameInfo.deck || [];
+    this.upcard = gameInfo.upcard;
+
+    for (const player of this.players.values()) {
+      player.turnToPlay = false;
+    }
+
+    for (const info of gameInfo.info) {
+      const player = this.ensurePlayer(info.id);
+
+      player.turnToPlay = info.id == gameInfo.current_player;
+      player.lifes = info.lifes;
+      player.ready = true;
+      player.setInfo = info.bid == null && info.rounds == null
+        ? null
+        : { points: info.rounds || 0, bid: info.bid || 0 };
+    }
+
+    this.totalCardsInRound = this.cardsPlayer.length;
+    setTimeout(() => this.adjustCardSize());
   }
 
   totalPlayersCount() {
@@ -129,6 +214,12 @@ export class GameComponent {
 
   bidding() {
     return this.gameState == GameState.Bidding
+  }
+
+  canPlayCards() {
+    const playerId = this.authService.getID();
+
+    return this.playing() && !!playerId && !!this.players.get(playerId)?.turnToPlay;
   }
 
   notReady() {
@@ -159,37 +250,10 @@ export class GameComponent {
         return this.handleGameEnded(message.data);
       case 'PlayerJoined':
         return this.handlePlayerJoined(message.data);
-      case 'Reconnect':
-        return this.reconnect(message.data)
+      case 'Snapshot':
+        return this.applySnapshot(message.data)
       case 'Error':
         return this.handleError(message.data)
-    }
-  }
-
-  reconnect(gameInfo: GameInfoDto) {
-    switch (gameInfo.stage.type) {
-      case "Dealing": this.gameState = GameState.Playing; break
-      case "Bidding":
-        this.gameState = GameState.Bidding;
-        const yourTurn = gameInfo.current_player == this.authService.getID();
-        this.possible_bids = yourTurn ? gameInfo.stage.data.possible_bids : null
-        break
-    }
-
-    this.cardsPlayer = gameInfo.deck
-    this.upcard = gameInfo.upcard
-
-    for (const info of gameInfo.info) {
-      const player = this.players.get(info.id)
-
-      if (!player) {
-        console.error("Missing player on reconnect: ", gameInfo)
-        continue;
-      }
-
-      player.turnToPlay = info.id == gameInfo.current_player
-      player.lifes = info.lifes
-      player.setInfo = { points: info.rounds, bid: info.bid }
     }
   }
 
@@ -209,28 +273,45 @@ export class GameComponent {
   }
 
   handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
-    const player = this.players.get(data.player_id)
-
-    if (!player) {
-      console.error('Missing player on handlePlayerStatusChange: ', data)
-      return
-    }
+    const player = this.ensurePlayer(data.player_id)
 
     player.ready = data.ready;
+
+    if (data.player_id == this.authService.getID()) {
+      this.ready = data.ready;
+    }
   }
 
   handleGameEnded(data: { lifes: PlayerPoints }) {
     this.updateLifes(data.lifes);
+    this.gameEndSummary = this.createGameEndSummary(data.lifes);
+    this.gameState = GameState.NotPlaying;
+    this.ready = false;
+    this.possible_bids = [];
+
+    for (const player of this.players.values()) {
+      player.turnToPlay = false;
+    }
+  }
+
+  private createGameEndSummary(lifes: PlayerPoints): GameEndSummary {
+    const maxLife = Math.max(...Object.values(lifes));
+    const winnerIds = maxLife > 0
+      ? Object.entries(lifes).filter(([, life]) => life === maxLife).map(([id]) => id)
+      : [];
+    const winners = winnerIds.map(id => this.ensurePlayer(id));
+    const names = winners.map(player => this.getPlayerNickname(player));
+
+    return {
+      winners,
+      winnerNames: names.join(', '),
+      noWinners: winners.length === 0,
+    };
   }
 
   private updateLifes(data: PlayerPoints) {
     for (const [id, lifes] of Object.entries(data)) {
-      const player = this.players.get(id);
-
-      if (!player) {
-        console.error('Missing player on updateLifes: ', data)
-        continue
-      }
+      const player = this.ensurePlayer(id);
 
       player.lifes = lifes;
     }
@@ -243,10 +324,14 @@ export class GameComponent {
   }
 
   handleSetStart(data: { upcard: Card }) {
+    this.gameState = GameState.Bidding;
+    this.possible_bids = [];
     this.upcard = data.upcard;
+    this.pile = [];
 
     for (const player of this.players.values()) {
       player.setInfo = null
+      player.turnToPlay = false
     }
   }
 
@@ -254,6 +339,7 @@ export class GameComponent {
     this.totalCardsInRound = data.length;
 
     this.cardsPlayer = data;
+    setTimeout(() => this.adjustCardSize());
   }
 
   getCardImage(card: Card) {
@@ -262,14 +348,9 @@ export class GameComponent {
 
   handleRoundEnded(data: PlayerPoints) {
     for (const [id, points] of Object.entries(data)) {
-      const player = this.players.get(id)
+      const player = this.ensurePlayer(id)
 
-      if (!player) {
-        console.error('Missing player on handleRoundEnded: ', data)
-        return
-      }
-
-      player.setInfo!.points = points;
+      player.setInfo = { bid: player.setInfo?.bid || 0, points };
     }
 
     this.pile = []
@@ -277,7 +358,7 @@ export class GameComponent {
 
   handlePlayerBidded(data: { player_id: string; bid: number; }) {
     //mostrar valor na tela para os outros tchos
-    const player = this.players.get(data.player_id)
+    const player = this.ensurePlayer(data.player_id)
 
     if (player?.setInfo) {
       player.setInfo.bid = data.bid
@@ -285,12 +366,14 @@ export class GameComponent {
     else {
       player!.setInfo = { bid: data.bid, points: 0 }
     }
+
+    player.turnToPlay = false;
   }
 
   handlePlayerBiddingTurn(data: { player_id: string; possible_bids: number[] }) {
     const yourTurn = data.player_id == this.authService.getID();
-    this.possible_bids = yourTurn ? data.possible_bids : null
-    this.gameState = GameState.Playing
+    this.possible_bids = yourTurn ? data.possible_bids : []
+    this.gameState = GameState.Bidding
 
     for (const [id, player] of this.players) {
       player.turnToPlay = data.player_id == id
@@ -303,11 +386,22 @@ export class GameComponent {
   }
 
   sendBid(bid: number) {
+    this.possible_bids = [];
+    const playerId = this.authService.getID();
+
+    if (playerId) {
+      const player = this.players.get(playerId);
+
+      if (player) {
+        player.turnToPlay = false;
+      }
+    }
+
     this.gameService.sendMessage({ type: "PutBid", data: { bid } })
   }
 
   bidTurn() {
-    return this.possible_bids != null
+    return this.bidding() && this.possible_bids.length > 0
   }
 
   handleTurnPlayed(data: { pile: Turn[] }) {
@@ -317,6 +411,7 @@ export class GameComponent {
 
   handlePlayerTurn(data: { player_id: string; }) {
     this.gameState = GameState.Playing;
+    this.possible_bids = [];
 
     const yourTurn = data.player_id == this.authService.getID();
 
@@ -358,6 +453,10 @@ export class GameComponent {
   }
 
   adjustCardSize() {
+    if (!this.cardsContainer) {
+      return;
+    }
+
     const cards = this.cardsContainer.nativeElement.querySelectorAll('.card img');
     const numberOfCards = cards.length;
 
@@ -391,7 +490,7 @@ export class GameComponent {
   handleCardClick(event: MouseEvent, card: Card) {
     const me = this.players.get(this.authService.getID()!);
 
-    if (!me?.turnToPlay || this.bidding()) {
+    if (!me?.turnToPlay || !this.playing()) {
       return;
     }
 
@@ -399,6 +498,32 @@ export class GameComponent {
     this.moveToCenter(event);
     this.cardsPlayer.splice(this.cardsPlayer.indexOf(card), 1)
     this.gameService.sendMessage({ type: "PlayTurn", data: { card } });
+  }
+
+  getPlayerPicture(player: PlayerInfo) {
+    return getPlayerPicture(player.data);
+  }
+
+  getPlayerNickname(player: PlayerInfo) {
+    return getPlayerNickname(player.data);
+  }
+
+  private ensurePlayer(id: string) {
+    const existing = this.players.get(id);
+
+    if (existing) {
+      return existing;
+    }
+
+    const claims = this.authService.getClaims();
+    const player: Player = claims?.id == id
+      ? { type: 'Anonymous', data: claims }
+      : { type: 'Anonymous', data: { id, data: { nickname: id, picture: '' } } };
+    const info = getPlayerInfo(player, true);
+
+    this.players.set(id, info);
+
+    return info;
   }
 
   getJokerValue(): Rank | null {
