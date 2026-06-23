@@ -144,7 +144,7 @@ export class GameComponent {
         this.applyWaitingSnapshot(snapshot.data);
         return;
       case 'Playing':
-        this.applyWaitingSnapshot(snapshot.data.players);
+        this.applyPlayers(snapshot.data.players);
         this.applyGameInfo(snapshot.data.game);
         return;
     }
@@ -152,13 +152,17 @@ export class GameComponent {
 
   private applyWaitingSnapshot(players: PlayerStatusMap) {
     this.gameEndSummary = null;
-    this.players = new Map(Object.entries(players).map(([id, status]) => [id, getPlayerInfo(status.player, status.ready)]));
-    this.ready = this.players.get(this.authService.getID() || '')?.ready || false;
+    this.applyPlayers(players);
     this.gameState = GameState.NotPlaying;
     this.cardsPlayer = [];
     this.pile = [];
     this.upcard = null;
     this.possible_bids = [];
+  }
+
+  private applyPlayers(players: PlayerStatusMap) {
+    this.players = new Map(Object.entries(players).map(([id, status]) => [id, getPlayerInfo(status.player, status.ready)]));
+    this.ready = this.players.get(this.authService.getID() || '')?.ready || false;
   }
 
   private applyGameInfo(gameInfo: GameInfoDto) {
