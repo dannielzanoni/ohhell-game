@@ -9,6 +9,7 @@ import { AnonymousPlayer } from '../models/player';
   styleUrl: './player-forms.component.css'
 })
 export class PlayerFormsComponent implements OnInit {
+  readonly nicknameMaxLength = 24;
   public userName: string | null = null;
   selectedPicture: string | null = null;
   profilePictures: string[] = [];
@@ -56,6 +57,14 @@ export class PlayerFormsComponent implements OnInit {
   }
 
   buttonDisabled() {
-    return this.userName == this.authService.getUserName() && this.selectedPicture == this.claims?.data["picture"]
+    return this.nicknameTooLong() || this.userName == this.authService.getUserName() && this.selectedPicture == this.claims?.data["picture"]
+  }
+
+  nicknameLength() {
+    return this.userName?.length || 0;
+  }
+
+  nicknameTooLong() {
+    return this.nicknameLength() > this.nicknameMaxLength;
   }
 }

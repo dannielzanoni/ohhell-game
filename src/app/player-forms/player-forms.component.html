@@ -1,6 +1,6 @@
 <div class="player-preview">
     <p-floatLabel style="margin-bottom: 20px; margin-top: 20px; color: white;">
-        <input id="username" type="text" pInputText [(ngModel)]="userName" />
+        <input id="username" type="text" pInputText [(ngModel)]="userName" [attr.maxlength]="nicknameMaxLength" />
         <label for="username">Username</label>
         <p-button [ngStyle]="{ 'margin-left': '10px' }" [raised]="true" severity="secondary" (click)="savePlayer()"
             [disabled]="buttonDisabled()"> <ng-template pTemplate="icon">
@@ -8,6 +8,9 @@
             </ng-template>
         </p-button>
     </p-floatLabel>
+    <div class="nickname-limit" [class.invalid]="nicknameTooLong()">
+        {{ nicknameLength() }}/{{ nicknameMaxLength }} characters
+    </div>
     <div class="profile-pictures">
         <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"
             (click)="selectPictureHandler(picture)" alt="Profile Picture" />

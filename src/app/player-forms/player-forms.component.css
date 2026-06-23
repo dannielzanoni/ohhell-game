@@ -17,6 +17,17 @@
   overflow-x: hidden;
 }
 
+.nickname-limit {
+  align-self: flex-start;
+  margin: -8px 0 10px 4px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.8rem;
+}
+
+.nickname-limit.invalid {
+  color: #ff9b8f;
+}
+
 .profile-pictures img {
   width: 80px;
   height: 80px;
