@@ -395,8 +395,6 @@ body {
   transform: translate(-50%, -50%);
   margin-bottom: 10rem;
   z-index: 51;
-  min-width: 9rem;
-  min-height: 10rem;
 }
 
 .pile {
