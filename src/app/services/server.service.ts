@@ -43,6 +43,7 @@ export type ServerMessage =
   | { type: 'SetEnded'; data: { lifes: PlayerPoints } }
   | { type: 'GameEnded'; data: { lifes: PlayerPoints } }
   | { type: 'PlayerJoined'; data: Player; }
+  | { type: 'PlayerLeft'; data: { player_id: string }; }
   | { type: 'Snapshot'; data: MatchSnapshot; }
   | { type: 'Error'; data: { msg: string }; }
 

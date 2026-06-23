@@ -253,6 +253,8 @@ export class GameComponent {
         return this.handleGameEnded(message.data);
       case 'PlayerJoined':
         return this.handlePlayerJoined(message.data);
+      case 'PlayerLeft':
+        return this.handlePlayerLeft(message.data);
       case 'Snapshot':
         return this.applySnapshot(message.data)
       case 'Error':
@@ -273,6 +275,10 @@ export class GameComponent {
     } else {
       player.data = data
     }
+  }
+
+  handlePlayerLeft(data: { player_id: string }) {
+    this.players.delete(data.player_id);
   }
 
   handlePlayerStatusChange(data: { player_id: string; ready: boolean }) {
