@@ -395,6 +395,8 @@ body {
   transform: translate(-50%, -50%);
   margin-bottom: 10rem;
   z-index: 51;
+  min-width: 9rem;
+  min-height: 10rem;
 }
 
 .pile {
@@ -413,6 +415,57 @@ body {
 
 .pile {
   z-index: var(--index);
+}
+
+.pile-tooltip {
+  position: absolute;
+  top: 8.5rem;
+  left: 50%;
+  min-width: 13rem;
+  padding: 0.65rem;
+  color: white;
+  background: rgba(10, 10, 10, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -0.35rem);
+  transition: opacity 0.16s ease;
+  z-index: 200;
+}
+
+.pile-container:hover .pile-tooltip {
+  opacity: 1;
+}
+
+.pile-tooltip-title {
+  margin-bottom: 0.4rem;
+  color: #ffca8a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.pile-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.25rem 0;
+  font-size: 0.88rem;
+}
+
+.pile-tooltip-player {
+  max-width: 8rem;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pile-tooltip-card {
+  color: rgba(255, 255, 255, 0.82);
+  text-align: right;
+  white-space: nowrap;
 }
 
 .game-ended-overlay {

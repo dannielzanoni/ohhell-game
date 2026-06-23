@@ -349,6 +349,16 @@ export class GameComponent {
     return `../assets/cards/${getCardImage(card)}.jpg`
   }
 
+  getCardLabel(card: Card) {
+    return `${card.rank} of ${card.suit}`;
+  }
+
+  getTurnPlayerNickname(turn: Turn) {
+    const player = this.players.get(turn.player_id);
+
+    return player ? this.getPlayerNickname(player) : turn.player_id;
+  }
+
   handleRoundEnded(data: PlayerPoints) {
     for (const [id, points] of Object.entries(data)) {
       const player = this.ensurePlayer(id)

@@ -51,6 +51,13 @@
       [ngStyle]="{'--index': pile.length - i, 'left.px': i * 20, 'transform': 'rotate(' + (i * 5) + 'deg)'}">
       <img [src]="getCardImage(turn.card)" />
     </div>
+    <div class="pile-tooltip" *ngIf="pile.length">
+      <div class="pile-tooltip-title">Stack</div>
+      <div class="pile-tooltip-row" *ngFor="let turn of pile">
+        <span class="pile-tooltip-player">{{ getTurnPlayerNickname(turn) }}</span>
+        <span class="pile-tooltip-card">{{ getCardLabel(turn.card) }}</span>
+      </div>
+    </div>
   </div>
 
   <div class="cards-container" #cardsContainer>
