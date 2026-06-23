@@ -27,6 +27,11 @@ type GameEndSummary = {
   noWinners: boolean;
 };
 
+type LifeLossHighlight = {
+  player: PlayerInfo;
+  lost: number;
+};
+
 @Component({
   selector: 'app-room',
   templateUrl: './game.component.html',
@@ -52,6 +57,11 @@ export class GameComponent {
   audiosBid: AudioInfo[] = [];
   gameEndSummary: GameEndSummary | null = null;
   eventDelayMs = this.loadEventDelayMs();
+  lifeLossHighlight: LifeLossHighlight | null = null;
+  private lifeLossHighlightTimeout: ReturnType<typeof setTimeout> | null = null;
+  private readonly lifeLossHighlightThreshold = 3;
+  private maxLifesSeen = new Map<string, number>();
+  private shownLifeLossHighlights = new Set<string>();
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -152,6 +162,9 @@ export class GameComponent {
 
   private applyWaitingSnapshot(players: PlayerStatusMap) {
     this.gameEndSummary = null;
+    this.hideLifeLossHighlight();
+    this.maxLifesSeen.clear();
+    this.shownLifeLossHighlights.clear();
     this.applyPlayers(players);
     this.gameState = GameState.NotPlaying;
     this.cardsPlayer = [];
@@ -193,6 +206,7 @@ export class GameComponent {
 
       player.turnToPlay = info.id == gameInfo.current_player;
       player.lifes = info.lifes;
+      this.rememberMaxLifes(info.id, info.lifes);
       player.ready = true;
       player.setInfo = info.bid == null && info.rounds == null
         ? null
@@ -297,6 +311,7 @@ export class GameComponent {
 
   handleGameEnded(data: { lifes: PlayerPoints }) {
     this.updateLifes(data.lifes);
+    this.hideLifeLossHighlight();
     this.gameEndSummary = this.createGameEndSummary(data.lifes);
     this.gameState = GameState.NotPlaying;
     this.ready = false;
@@ -327,13 +342,54 @@ export class GameComponent {
       const player = this.ensurePlayer(id);
 
       player.lifes = lifes;
+      this.rememberMaxLifes(id, lifes);
     }
   }
 
   handleSetEnded(data: { lifes: PlayerPoints }) {
+    this.showLifeLossHighlight(data.lifes);
     this.updateLifes(data.lifes)
 
     this.pile = []
+  }
+
+  private showLifeLossHighlight(lifes: PlayerPoints) {
+    for (const [id, currentLifes] of Object.entries(lifes)) {
+      const player = this.ensurePlayer(id);
+      const previousLifes = player.lifes;
+      const maxLifes = Math.max(this.maxLifesSeen.get(id) ?? previousLifes, previousLifes, currentLifes);
+      const previousLost = maxLifes - previousLifes;
+      const currentLost = maxLifes - currentLifes;
+
+      this.maxLifesSeen.set(id, maxLifes);
+
+      if (currentLost < this.lifeLossHighlightThreshold || previousLost >= this.lifeLossHighlightThreshold || this.shownLifeLossHighlights.has(id)) {
+        continue;
+      }
+
+      this.shownLifeLossHighlights.add(id);
+      this.lifeLossHighlight = { player, lost: currentLost };
+
+      if (this.lifeLossHighlightTimeout) {
+        clearTimeout(this.lifeLossHighlightTimeout);
+      }
+
+      this.lifeLossHighlightTimeout = setTimeout(() => this.hideLifeLossHighlight(), 3600);
+      return;
+    }
+  }
+
+  private hideLifeLossHighlight() {
+    this.lifeLossHighlight = null;
+
+    if (this.lifeLossHighlightTimeout) {
+      clearTimeout(this.lifeLossHighlightTimeout);
+      this.lifeLossHighlightTimeout = null;
+    }
+  }
+
+  private rememberMaxLifes(playerId: string, lifes: number) {
+    this.maxLifesSeen.set(playerId, Math.max(this.maxLifesSeen.get(playerId) ?? lifes, lifes));
   }
 
   handleSetStart(data: { upcard: Card }) {

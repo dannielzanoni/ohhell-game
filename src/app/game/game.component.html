@@ -94,6 +94,18 @@
     </div>
   </div>
 
+  <div class="life-loss-popup" *ngIf="lifeLossHighlight">
+    <div class="life-loss-burst"></div>
+    <div class="life-loss-avatar" [ngStyle]="{
+        'background-image': 'url(' + getPlayerPicture(lifeLossHighlight.player) + ')'
+      }"></div>
+    <div class="life-loss-copy">
+      <span>João plays</span>
+      <strong>{{ getPlayerNickname(lifeLossHighlight.player) }}</strong>
+      <small>Lost {{ lifeLossHighlight.lost }} lives</small>
+    </div>
+  </div>
+
   <div class="info">
     <button pButton icon="{{ collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up' }}" (click)="toggleCollapse()"
       label="{{ collapsed ? 'Expand' : 'Collapse' }}" class="p-button-rounded p-button-text">

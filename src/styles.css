@@ -7,3 +7,95 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
+.life-loss-popup {
+  position: fixed;
+  top: 16%;
+  left: 50%;
+  z-index: 2500;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.2rem 0.9rem 0.95rem;
+  color: #fff8de;
+  background: linear-gradient(135deg, rgba(23, 8, 8, 0.95), rgba(133, 26, 16, 0.92));
+  border: 2px solid rgba(255, 213, 92, 0.75);
+  border-radius: 999px;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.48), 0 0 35px rgba(255, 120, 31, 0.32);
+  transform: translateX(-50%);
+  overflow: hidden;
+  animation: life-loss-pop 3.6s ease both;
+}
+
+.life-loss-burst {
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(from 0deg, transparent, rgba(255, 216, 92, 0.42), transparent 24%);
+  animation: life-loss-spin 1.4s linear infinite;
+}
+
+.life-loss-avatar {
+  position: relative;
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 3px solid #ffd65c;
+  border-radius: 50%;
+  background-color: #111;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 0 0 rgba(255, 214, 92, 0.7);
+  animation: life-loss-pulse 0.95s ease-in-out infinite;
+}
+
+.life-loss-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 10rem;
+}
+
+.life-loss-copy span {
+  color: #ffd65c;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.life-loss-copy strong {
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.life-loss-copy small {
+  color: rgba(255, 248, 222, 0.78);
+  font-size: 0.9rem;
+}
+
+@keyframes life-loss-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -1.2rem) scale(0.75) rotate(-3deg);
+  }
+  12%, 82% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -0.7rem) scale(0.9);
+  }
+}
+
+@keyframes life-loss-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes life-loss-pulse {
+  50% {
+    box-shadow: 0 0 0 0.45rem rgba(255, 214, 92, 0.12);
+    transform: scale(1.06);
+  }
+}
