@@ -455,7 +455,9 @@ export class GameComponent {
   }
 
   getMapEntries() {
-    return Array.from(this.players.values()).filter(p => p.lifes > 0);
+    return Array.from(this.players.values())
+      .filter(p => p.lifes > 0)
+      .sort((a, b) => getPlayerId(a.data).localeCompare(getPlayerId(b.data)));
   }
 
   markAsReady() {
