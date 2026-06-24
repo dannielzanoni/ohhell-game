@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
-import { AnonymousPlayer, GooglePlayer, Player, getPlayerId, getPlayerNickname, getPlayerPicture } from '../models/player';
+import { GooglePlayer, Player, getPlayerId, getPlayerNickname, getPlayerPicture } from '../models/player';
 import { firstValueFrom } from 'rxjs';
 
 type GoogleTokenClaims = GooglePlayer & {
@@ -24,7 +24,7 @@ type AuthResponse = {
   refresh_token?: string | null;
 };
 
-type DecodedTokenClaims = AnonymousPlayer | GoogleTokenClaims | AccessTokenClaims;
+type DecodedTokenClaims = GoogleTokenClaims | AccessTokenClaims;
 
 const ACCESS_TOKEN_STORAGE_KEY = 'JWT_TOKEN';
 const REFRESH_TOKEN_STORAGE_KEY = 'REFRESH_TOKEN';
@@ -267,10 +267,6 @@ export class AuthService {
       return claims.user;
     }
 
-    if (this.isAnonymousPlayer(claims)) {
-      return { type: 'Anonymous', data: claims };
-    }
-
     if (this.isGoogleTokenClaims(claims)) {
       return {
         type: 'Google',
@@ -283,10 +279,6 @@ export class AuthService {
     }
 
     throw new Error('Unsupported auth token');
-  }
-
-  private isAnonymousPlayer(claims: DecodedTokenClaims): claims is AnonymousPlayer {
-    return 'id' in claims && 'data' in claims;
   }
 
   private isAccessTokenClaims(claims: DecodedTokenClaims): claims is AccessTokenClaims {
