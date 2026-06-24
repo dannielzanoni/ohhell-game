@@ -356,7 +356,7 @@ export class GameComponent {
   private showLifeLossHighlight(lifes: PlayerPoints) {
     for (const [id, currentLifes] of Object.entries(lifes)) {
       const player = this.ensurePlayer(id);
-      const previousLifes = player.lifes;
+      const previousLifes = player.lifes ?? currentLifes;
       const maxLifes = Math.max(this.maxLifesSeen.get(id) ?? previousLifes, previousLifes, currentLifes);
       const previousLost = maxLifes - previousLifes;
       const currentLost = maxLifes - currentLifes;
@@ -503,8 +503,12 @@ export class GameComponent {
     }
   }
 
-  getHearts(lifes: number) {
-    return Array(lifes).fill(null)
+  getHearts(lifes: number | null) {
+    return Array(lifes ?? 0).fill(null)
+  }
+
+  shouldShowLifes(player: PlayerInfo) {
+    return !this.notReady() && player.lifes !== null;
   }
 
   getPoints(player: PlayerInfo) {
@@ -516,13 +520,17 @@ export class GameComponent {
 
   getMapEntries() {
     return Array.from(this.players.values())
-      .filter(p => p.lifes > 0)
+      .filter(p => p.lifes === null || p.lifes > 0)
       .sort((a, b) => getPlayerId(a.data).localeCompare(getPlayerId(b.data)));
   }
 
   markAsReady() {
     this.ready = !this.ready;
     this.gameService.sendMessage({ type: "PlayerStatusChange", data: { ready: this.ready } })
+  }
+
+  goToMenu() {
+    this.router.navigate(['/']);
   }
 
   playersToStart() {
@@ -600,7 +608,7 @@ export class GameComponent {
     const player: Player = playerClaims && getPlayerId(playerClaims) == id
       ? playerClaims
       : { type: 'Anonymous', data: { id, data: { nickname: id, picture: '' } } };
-    const info = getPlayerInfo(player, true);
+    const info = getPlayerInfo(player, true, null);
 
     this.players.set(id, info);
 

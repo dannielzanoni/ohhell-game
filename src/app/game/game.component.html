@@ -10,7 +10,7 @@
             <div class="prediction-circle">{{ playerInfo.setInfo?.bid}}</div>
             <h4 class="player-nick"> {{ getPlayerNickname(playerInfo) }}</h4>
 
-            <div class="hearts">
+            <div class="hearts" *ngIf="shouldShowLifes(playerInfo)">
               <img *ngFor="let heart of getHearts(playerInfo.lifes)" class="heart" src="../../assets/heart3.png"
                 alt="Heart" />
             </div>
@@ -84,12 +84,14 @@
         </div>
         <h2>{{ gameEndSummary.winnerNames }}</h2>
         <p>Last player standing.</p>
+        <p-button label="Back to Menu" [raised]="true" severity="secondary" (click)="goToMenu()" />
       </ng-container>
 
       <ng-template #noWinners>
         <h1>No winners</h1>
         <div class="no-winners-mark">0</div>
         <p>Everyone ran out of lives.</p>
+        <p-button label="Back to Menu" [raised]="true" severity="secondary" (click)="goToMenu()" />
       </ng-template>
     </div>
   </div>

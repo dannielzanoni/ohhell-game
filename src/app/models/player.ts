@@ -20,7 +20,7 @@ export type AnonymousPlayer = {
 }
 
 export type PlayerInfo = {
-  lifes: number;
+  lifes: number | null;
   data: Player;
   ready: boolean;
   setInfo: SetInfo | null;
@@ -43,8 +43,8 @@ export function getPlayerId(player: Player) {
   }
 }
 
-export function getPlayerInfo(player: Player, ready = false): PlayerInfo {
-  return { lifes: 5, data: player, ready, setInfo: null, turnToPlay: false }
+export function getPlayerInfo(player: Player, ready = false, lifes: number | null = null): PlayerInfo {
+  return { lifes, data: player, ready, setInfo: null, turnToPlay: false }
 }
 
 export function getPlayerNickname(player: Player) {
