@@ -28,6 +28,51 @@
   color: #ff9b8f;
 }
 
+.google-auth {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.google-label,
+.google-status {
+  margin: 0 0 0.75rem;
+}
+
+.google-status {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+}
+
+.google-status.error {
+  color: #ffb3a7;
+}
+
+.google-button {
+  display: flex;
+  justify-content: center;
+}
+
+.google-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.google-profile img {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 3px solid #ffee00;
+  object-fit: cover;
+}
+
+.google-profile h3,
+.google-profile p {
+  margin: 0;
+}
+
 .profile-pictures img {
   width: 80px;
   height: 80px;
@@ -61,6 +106,11 @@
   .player-preview {
     margin-top: 20px;
     max-width: 300px;
+  }
+
+  .google-button {
+    width: 100%;
+    overflow-x: auto;
   }
 
   .profile-pictures {

@@ -3,6 +3,7 @@ import { deserializeServerMessage, ServerMessage } from './server.service';
 import { Router } from '@angular/router';
 import { ClientMessage } from './client.service';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,12 @@ export class GameService {
   private pendingMessages: ClientMessage[] = [];
   emitter = new EventEmitter<ServerMessage>();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
 
   }
 
-  auth() {
-    const token = localStorage.getItem('JWT_TOKEN');
+  async auth() {
+    const token = await this.authService.ensureValidToken();
 
     if (!token) {
       this.router.navigate(['/']);

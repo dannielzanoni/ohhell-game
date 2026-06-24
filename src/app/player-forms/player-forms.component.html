@@ -1,4 +1,12 @@
 <div class="player-preview">
+    <div class="google-auth" *ngIf="canLoginWithGoogle()">
+        <p class="google-label">Continue with Google</p>
+        <div #googleButton class="google-button"></div>
+        <p class="google-status" *ngIf="isGoogleAuthenticated()">Using your Google name and avatar for this session.</p>
+        <p class="google-status error" *ngIf="googleError">{{ googleError }}</p>
+    </div>
+
+    <ng-container *ngIf="!isGoogleAuthenticated(); else googleProfile">
     <p-floatLabel style="margin-bottom: 20px; margin-top: 20px; color: white;">
         <input id="username" type="text" pInputText [(ngModel)]="userName" [attr.maxlength]="nicknameMaxLength" />
         <label for="username">Username</label>
@@ -15,4 +23,13 @@
         <img *ngFor="let picture of profilePictures" [src]="picture" [class.selected]="picture === selectedPicture"
             (click)="selectPictureHandler(picture)" alt="Profile Picture" />
     </div>
+    </ng-container>
+
+    <ng-template #googleProfile>
+        <div class="google-profile">
+            <img *ngIf="selectedPicture" [src]="selectedPicture" [alt]="userName || 'Google profile picture'" />
+            <h3>{{ userName }}</h3>
+            <p>Google account connected</p>
+        </div>
+    </ng-template>
 </div>

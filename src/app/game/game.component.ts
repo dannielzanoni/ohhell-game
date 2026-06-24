@@ -128,7 +128,7 @@ export class GameComponent {
     this.lobbyService.joinLobby(roomId).subscribe({
       next: lobby => {
         this.applyLobbyInfo(lobby);
-        this.gameService.auth();
+        void this.gameService.auth();
       },
       error: error => {
         console.error('Could not join lobby: ', error);
@@ -596,9 +596,9 @@ export class GameComponent {
       return existing;
     }
 
-    const claims = this.authService.getClaims();
-    const player: Player = claims?.id == id
-      ? { type: 'Anonymous', data: claims }
+    const playerClaims = this.authService.getClaims();
+    const player: Player = playerClaims && getPlayerId(playerClaims) == id
+      ? playerClaims
       : { type: 'Anonymous', data: { id, data: { nickname: id, picture: '' } } };
     const info = getPlayerInfo(player, true);
 
