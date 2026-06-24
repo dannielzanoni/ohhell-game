@@ -27,10 +27,6 @@ export class PlayerFormsComponent implements OnInit, AfterViewInit {
   }
 
   async savePlayer() {
-    if (this.isGoogleAuthenticated()) {
-      return;
-    }
-
     if (this.selectedPicture == null) {
       this.selectedPicture = this.selectRandom();
     }
@@ -81,7 +77,7 @@ export class PlayerFormsComponent implements OnInit, AfterViewInit {
   }
 
   buttonDisabled() {
-    const currentPicture = this.claims?.type === 'Anonymous' ? this.claims.data.data['picture'] : this.authService.getUserPicture();
+    const currentPicture = this.authService.getUserPicture();
 
     return this.nicknameTooLong() || this.userName == this.authService.getUserName() && this.selectedPicture == currentPicture
   }
@@ -98,8 +94,30 @@ export class PlayerFormsComponent implements OnInit, AfterViewInit {
     return this.googleClientId.length > 0;
   }
 
+  isAuthenticated() {
+    return this.authService.isUserAuthenticated();
+  }
+
+  isGuestAuthenticated() {
+    return this.isAuthenticated() && !this.isGoogleAuthenticated();
+  }
+
   isGoogleAuthenticated() {
     return this.claims?.type === 'Google';
+  }
+
+  profileLabel() {
+    return this.isGoogleAuthenticated() ? 'Profile' : 'Guest profile';
+  }
+
+  profileHint() {
+    return this.isGoogleAuthenticated()
+      ? 'Your Google name and avatar are loaded below. Save to override them for this app.'
+      : 'Choose a guest username and avatar below if you want to play without Google.';
+  }
+
+  usernameLabel() {
+    return this.isGoogleAuthenticated() ? 'Display name' : 'Guest username';
   }
 
   private refreshProfileState() {

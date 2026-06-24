@@ -48,8 +48,13 @@ export class AuthService {
 
   private httpGoogleLogin(credential: string) {
     const url = `${environment.api_url}/auth/google`
+    const token = this.getAccessToken();
+    const claims = this.getClaims();
+    const headers = token && claims?.type === 'Anonymous'
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : undefined;
 
-    return this.client.post<AuthResponse>(url, { credential })
+    return this.client.post<AuthResponse>(url, { credential }, headers ? { headers } : undefined)
   }
 
   private httpRefresh(refreshToken: string) {
@@ -68,6 +73,8 @@ export class AuthService {
   }
 
   async loginWithGoogle(credential: string) {
+    await this.ensureValidToken();
+
     const loginData = await firstValueFrom(this.httpGoogleLogin(credential));
 
     this.storeAuth(loginData);
@@ -128,10 +135,6 @@ export class AuthService {
   }
 
   async updateProfile(nickname: string, picture: string) {
-    if (this.isGoogleAuthenticated()) {
-      return;
-    }
-
     const response = await firstValueFrom(this.updateProfileHttp(nickname, picture))
 
     this.storeAuth(response);

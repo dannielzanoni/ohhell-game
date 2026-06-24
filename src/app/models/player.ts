@@ -10,7 +10,8 @@ export type GooglePlayer = {
   email: string;
   picture: string;
   name: string;
-  data?: { [key: string]: null }
+  nickname?: string | null;
+  picture_override?: string | null;
 }
 
 export type AnonymousPlayer = {
@@ -51,7 +52,7 @@ export function getPlayerNickname(player: Player) {
     case "Anonymous":
       return player.data.data["nickname"] || player.data.id;
     case "Google":
-      return player.data.name || player.data.email;
+      return player.data.nickname || player.data.name || player.data.email;
     default:
       throw new Error('Unknown player type');
   }
@@ -62,7 +63,7 @@ export function getPlayerPicture(player: Player) {
     case "Anonymous":
       return player.data.data["picture"] || '';
     case "Google":
-      return player.data.picture || '';
+      return player.data.picture_override || player.data.picture || '';
     default:
       throw new Error('Unknown player type');
   }

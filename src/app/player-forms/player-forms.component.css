@@ -38,7 +38,17 @@
   margin: 0 0 0.75rem;
 }
 
+.guest-label,
+.guest-status {
+  margin: 0 0 0.75rem;
+}
+
 .google-status {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+}
+
+.guest-status {
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.85rem;
 }
@@ -52,25 +62,19 @@
   justify-content: center;
 }
 
-.google-profile {
+.current-picture {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  justify-content: center;
+  margin: 0.5rem 0 1rem;
 }
 
-.google-profile img {
+.current-picture img {
   width: 88px;
   height: 88px;
   border-radius: 50%;
   border: 3px solid #ffee00;
   object-fit: cover;
-}
-
-.google-profile h3,
-.google-profile p {
-  margin: 0;
 }
 
 .profile-pictures img {
