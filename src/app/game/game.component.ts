@@ -60,8 +60,6 @@ export class GameComponent {
   lifeLossHighlight: LifeLossHighlight | null = null;
   private lifeLossHighlightTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly lifeLossHighlightThreshold = 3;
-  private maxLifesSeen = new Map<string, number>();
-  private shownLifeLossHighlights = new Set<string>();
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -163,8 +161,6 @@ export class GameComponent {
   private applyWaitingSnapshot(players: PlayerStatusMap) {
     this.gameEndSummary = null;
     this.hideLifeLossHighlight();
-    this.maxLifesSeen.clear();
-    this.shownLifeLossHighlights.clear();
     this.applyPlayers(players);
     this.gameState = GameState.NotPlaying;
     this.cardsPlayer = [];
@@ -206,7 +202,6 @@ export class GameComponent {
 
       player.turnToPlay = info.id == gameInfo.current_player;
       player.lifes = info.lifes;
-      this.rememberMaxLifes(info.id, info.lifes);
       player.ready = true;
       player.setInfo = info.bid == null && info.rounds == null
         ? null
@@ -342,7 +337,6 @@ export class GameComponent {
       const player = this.ensurePlayer(id);
 
       player.lifes = lifes;
-      this.rememberMaxLifes(id, lifes);
     }
   }
 
@@ -357,18 +351,13 @@ export class GameComponent {
     for (const [id, currentLifes] of Object.entries(lifes)) {
       const player = this.ensurePlayer(id);
       const previousLifes = player.lifes ?? currentLifes;
-      const maxLifes = Math.max(this.maxLifesSeen.get(id) ?? previousLifes, previousLifes, currentLifes);
-      const previousLost = maxLifes - previousLifes;
-      const currentLost = maxLifes - currentLifes;
+      const lost = previousLifes - currentLifes;
 
-      this.maxLifesSeen.set(id, maxLifes);
-
-      if (currentLost < this.lifeLossHighlightThreshold || previousLost >= this.lifeLossHighlightThreshold || this.shownLifeLossHighlights.has(id)) {
+      if (lost < this.lifeLossHighlightThreshold) {
         continue;
       }
 
-      this.shownLifeLossHighlights.add(id);
-      this.lifeLossHighlight = { player, lost: currentLost };
+      this.lifeLossHighlight = { player, lost };
 
       if (this.lifeLossHighlightTimeout) {
         clearTimeout(this.lifeLossHighlightTimeout);
@@ -386,10 +375,6 @@ export class GameComponent {
       clearTimeout(this.lifeLossHighlightTimeout);
       this.lifeLossHighlightTimeout = null;
     }
-  }
-
-  private rememberMaxLifes(playerId: string, lifes: number) {
-    this.maxLifesSeen.set(playerId, Math.max(this.maxLifesSeen.get(playerId) ?? lifes, lifes));
   }
 
   handleSetStart(data: { upcard: Card }) {
