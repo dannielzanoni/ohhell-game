@@ -1,4 +1,8 @@
 <div class="container">
+  <div *ngIf="connectionBannerText() as banner" class="connection-banner">
+    {{ banner }}
+  </div>
+
   <div>
     <div class="table-container">
       <div class="table">
@@ -29,7 +33,7 @@
     <div class="ready-count">
       Players ready: {{ totalReadyPlayersCount() }}/{{ totalPlayersCount() }}
     </div>
-    <p-button [disabled]="!playersToStart()" label="Ready" [raised]="true" severity="secondary"
+    <p-button [disabled]="!playersToStart()" [label]="ready ? 'Unready' : 'Ready'" [raised]="true" severity="secondary"
       (click)="markAsReady()" />
   </div>
 

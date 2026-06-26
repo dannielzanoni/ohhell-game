@@ -1,12 +1,12 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '../services/game.service';
+import { GameConnectionState, GameService } from '../services/game.service';
 import { LobbyService } from '../services/lobby.service';
 import { GameInfoDto, MatchSnapshot, PlayerStatusMap, ServerMessage } from '../services/server.service';
 import { Card, getCardImage, Rank, Turn } from '../models/turn';
 import { getPlayerId, getPlayerInfo, getPlayerNickname, getPlayerPicture, Player, PlayerInfo, PlayerPoints } from '../models/player';
 import { AuthService } from '../services/auth.service';
-import { of } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { concatMap, delay } from 'rxjs/operators';
 import { LobbyInfo } from '../services/lobby.service';
 
@@ -37,7 +37,7 @@ type LifeLossHighlight = {
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent {
+export class GameComponent implements OnDestroy {
   private readonly eventDelayStorageKey = 'GAME_EVENT_DELAY_MS';
   readonly maxEventDelayMs = 3000;
   players: Map<string, PlayerInfo> = new Map;
@@ -58,8 +58,10 @@ export class GameComponent {
   gameEndSummary: GameEndSummary | null = null;
   eventDelayMs = this.loadEventDelayMs();
   lifeLossHighlight: LifeLossHighlight | null = null;
+  connectionState: GameConnectionState = 'disconnected';
   private lifeLossHighlightTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly lifeLossHighlightThreshold = 3;
+  private readonly subscriptions = new Subscription();
 
   toggleCollapse() {
     this.collapsed = !this.collapsed;
@@ -74,20 +76,28 @@ export class GameComponent {
     private lobbyService: LobbyService,
     private authService: AuthService
   ) {
-    this.gameService.emitter.pipe(
-      concatMap(event => {
-        switch (event.type) {
-          case 'RoundEnded':
-          case 'SetEnded':
-          case 'GameEnded':
-            return of(event).pipe(delay(this.eventDelayMs))
-          default:
-            return of(event)
-        }
+    this.subscriptions.add(
+      this.gameService.emitter.pipe(
+        concatMap(event => {
+          switch (event.type) {
+            case 'RoundEnded':
+            case 'SetEnded':
+            case 'GameEnded':
+              return of(event).pipe(delay(this.eventDelayMs))
+            default:
+              return of(event)
+          }
+        })
+      ).subscribe(x => {
+        this.handleServerGameMessage(x);
       })
-    ).subscribe(x => {
-      this.handleServerGameMessage(x);
-    });
+    );
+
+    this.subscriptions.add(
+      this.gameService.connectionState$.subscribe(state => {
+        this.connectionState = state;
+      })
+    );
   }
 
   ngOnInit(): void {
@@ -106,6 +116,11 @@ export class GameComponent {
 
     this.selectedAudio = this.audios[0];
     this.selectedAudioBid = this.audiosBid[0];
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    this.gameService.disconnect();
   }
 
   join() {
@@ -235,7 +250,7 @@ export class GameComponent {
   canPlayCards() {
     const playerId = this.authService.getID();
 
-    return this.playing() && !!playerId && !!this.players.get(playerId)?.turnToPlay;
+    return this.isConnected() && this.playing() && !!playerId && !!this.players.get(playerId)?.turnToPlay;
   }
 
   notReady() {
@@ -450,6 +465,10 @@ export class GameComponent {
   }
 
   sendBid(bid: number) {
+    if (!this.isConnected()) {
+      return;
+    }
+
     this.possible_bids = [];
     const playerId = this.authService.getID();
 
@@ -465,7 +484,7 @@ export class GameComponent {
   }
 
   bidTurn() {
-    return this.bidding() && this.possible_bids.length > 0
+    return this.isConnected() && this.bidding() && this.possible_bids.length > 0
   }
 
   handleTurnPlayed(data: { pile: Turn[] }) {
@@ -510,16 +529,21 @@ export class GameComponent {
   }
 
   markAsReady() {
+    if (!this.isConnected()) {
+      return;
+    }
+
     this.ready = !this.ready;
     this.gameService.sendMessage({ type: "PlayerStatusChange", data: { ready: this.ready } })
   }
 
   goToMenu() {
+    this.gameService.disconnect();
     this.router.navigate(['/']);
   }
 
   playersToStart() {
-    return this.players.size > 1
+    return this.isConnected() && this.players.size > 1
   }
 
   ngAfterViewInit() {
@@ -564,7 +588,7 @@ export class GameComponent {
   handleCardClick(event: MouseEvent, card: Card) {
     const me = this.players.get(this.authService.getID()!);
 
-    if (!me?.turnToPlay || !this.playing()) {
+    if (!this.isConnected() || !me?.turnToPlay || !this.playing()) {
       return;
     }
 
@@ -676,6 +700,21 @@ export class GameComponent {
 
   private clampEventDelay(value: number) {
     return Math.max(0, Math.min(this.maxEventDelayMs, Math.round(value)));
+  }
+
+  isConnected() {
+    return this.connectionState == 'connected';
+  }
+
+  connectionBannerText() {
+    switch (this.connectionState) {
+      case 'connecting':
+        return 'Connecting to match...';
+      case 'reconnecting':
+        return 'Reconnecting to match...';
+      default:
+        return null;
+    }
   }
 
 }

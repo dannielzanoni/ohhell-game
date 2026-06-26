@@ -22,6 +22,17 @@ body {
   position: relative;
 }
 
+.connection-banner {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.6rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.88);
+  color: white;
+}
+
 .table-container {
   position: absolute;
   top: 50%;
